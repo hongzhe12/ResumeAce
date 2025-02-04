@@ -6,10 +6,11 @@ import sys
 
 from PySide6.QtCore import QThread, Signal, QUrl
 from PySide6.QtGui import QDesktopServices
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 
+from drawermenu import DrawerMenu
 from ui_main_window import Ui_MainWindow
 
 # 配置日志输出到文件
@@ -169,8 +170,34 @@ class MainWindow(QMainWindow):
         self.ui.start_button.clicked.connect(self.start_tasks)
         self.ui.open_log_button.clicked.connect(self.open_log_file)
         self.ui.stop_button.clicked.connect(self.stop_tasks)
-
         self.ui.add_group.clicked.connect(self.add_group)
+
+        # 创建抽屉式菜单
+        self.drawer_menu = DrawerMenu(self)
+
+        # 追加样式
+        current_stylesheet = self.drawer_menu.styleSheet()
+
+        # 向侧边栏添加按钮
+        self.button1 = QPushButton("主页")
+
+        self.button1.setMinimumSize(180, 50)
+        self.button2 = QPushButton("设置")
+        self.button3 = QPushButton("关于")
+        self.button1.setStyleSheet("""   QPushButton {
+       border-width: 0px;
+       border-style: none;
+       border-color: transparent;
+	   border-radius:8px;
+	   color: rgb(255, 255, 255);
+	   background-color: rgb(65, 168, 99);
+   }""")
+        self.drawer_menu.add_widget(self.button1)
+        self.drawer_menu.add_widget(self.button2)
+        self.drawer_menu.add_widget(self.button3)
+
+
+
 
 
 

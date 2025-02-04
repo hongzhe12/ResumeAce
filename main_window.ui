@@ -62,6 +62,21 @@
           <height>31</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+QLineEdit:hover {
+    border-color: #999;
+}
+
+QLineEdit:focus {
+    border-color: #4CAF50;
+}</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -78,6 +93,21 @@
           <width>0</width>
           <height>31</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+QLineEdit:hover {
+    border-color: #999;
+}
+
+QLineEdit:focus {
+    border-color: #4CAF50;
+}</string>
         </property>
         <property name="minimum">
          <number>1</number>

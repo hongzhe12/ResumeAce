@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.8.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -68,6 +68,19 @@ class Ui_MainWindow(object):
         self.filter_input = QLineEdit(self.centralwidget)
         self.filter_input.setObjectName(u"filter_input")
         self.filter_input.setMinimumSize(QSize(0, 31))
+        self.filter_input.setStyleSheet(u"QLineEdit {\n"
+"    padding: 5px;\n"
+"    border: 1px solid #ccc;\n"
+"    border-radius: 3px;\n"
+"}\n"
+"\n"
+"QLineEdit:hover {\n"
+"    border-color: #999;\n"
+"}\n"
+"\n"
+"QLineEdit:focus {\n"
+"    border-color: #4CAF50;\n"
+"}")
 
         self.verticalLayout_2.addWidget(self.filter_input)
 
@@ -79,6 +92,19 @@ class Ui_MainWindow(object):
         self.num_tasks_input = QSpinBox(self.centralwidget)
         self.num_tasks_input.setObjectName(u"num_tasks_input")
         self.num_tasks_input.setMinimumSize(QSize(0, 31))
+        self.num_tasks_input.setStyleSheet(u"QLineEdit {\n"
+"    padding: 5px;\n"
+"    border: 1px solid #ccc;\n"
+"    border-radius: 3px;\n"
+"}\n"
+"\n"
+"QLineEdit:hover {\n"
+"    border-color: #999;\n"
+"}\n"
+"\n"
+"QLineEdit:focus {\n"
+"    border-color: #4CAF50;\n"
+"}")
         self.num_tasks_input.setMinimum(1)
         self.num_tasks_input.setMaximum(1000)
         self.num_tasks_input.setValue(100)

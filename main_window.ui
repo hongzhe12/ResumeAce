@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>409</width>
-    <height>664</height>
+    <width>383</width>
+    <height>707</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -151,19 +151,6 @@ QLineEdit:focus {
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="open_log_button">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>查看日志文件</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="stop_button">
         <property name="minimumSize">
          <size>
@@ -172,7 +159,7 @@ QLineEdit:focus {
          </size>
         </property>
         <property name="text">
-         <string>暂停任务</string>
+         <string>停止任务</string>
         </property>
        </widget>
       </item>
@@ -189,6 +176,32 @@ QLineEdit:focus {
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="open_log_button">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>查看日志文件</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="check">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>检查连接</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -198,7 +211,7 @@ QLineEdit:focus {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>409</width>
+     <width>383</width>
      <height>33</height>
     </rect>
    </property>

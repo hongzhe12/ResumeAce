@@ -8,7 +8,8 @@ from typing import List, Optional, Tuple
 
 from PySide6.QtCore import QThread, Signal, QUrl
 from PySide6.QtGui import QDesktopServices
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QVBoxLayout, QLabel, QTextEdit, QDialogButtonBox, \
+    QMessageBox
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 
@@ -155,6 +156,8 @@ class TaskWorker(QThread):
             self.progress_updated.emit((i + 1) * 100 // self.num_tasks)
 
 
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -170,6 +173,8 @@ class MainWindow(QMainWindow):
         self.ui.stop_button.clicked.connect(self.stop_tasks)
 
         self.ui.check.clicked.connect(self.check_connection)
+
+
 
     def check_connection(self):
         """检查Android设备连接状态"""
@@ -237,9 +242,28 @@ class MainWindow(QMainWindow):
         """更新进度条"""
         self.ui.progress_bar.setValue(progress)
 
+def show_disclaimer():
+    disclaimer_text = """免责声明：\n  本程序仅供学习和参考使用，作者不对因使用本程序而产生的任何直接或间接损失负责。继续使用本程序即表示您同意此免责声明。"""
+    msg_box = QMessageBox()
+    msg_box.setIcon(QMessageBox.Information)
+    msg_box.setWindowTitle("免责声明")
+    msg_box.setText(disclaimer_text)
+    msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+    msg_box.setDefaultButton(QMessageBox.Ok)
+    # 将 OK 按钮的文本修改为“同意”
+    msg_box.button(QMessageBox.Ok).setText("同意")
+    msg_box.button(QMessageBox.Cancel).setText("不同意")
 
+    result = msg_box.exec()
+    if result == QMessageBox.Ok:
+        return True
+    else:
+        return False
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
+    if show_disclaimer():
+        window = MainWindow()
+        window.show()
+        sys.exit(app.exec())
+    else:
+        sys.exit()

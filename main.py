@@ -135,10 +135,16 @@ class TaskWorker(QThread):
 
     def __init__(self, job_key: List[str], num_tasks: int):
         super().__init__()
+
         self.job_key = job_key
         self.num_tasks = num_tasks
 
     def run(self):
+
+        auto_setup(__file__)  # 初始化Poco
+        global poco
+        poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
+
         # 执行队列中的任务
         for i in range(self.num_tasks):
             add_task(lambda: task_job(self.job_key))
@@ -237,10 +243,6 @@ class MainWindow(QMainWindow):
         self.worker.task_failed.connect(self.on_task_failed)
         self.worker.progress_updated.connect(self.update_progress)
 
-        # 在开始执行任务之前初始化Poco
-        auto_setup(__file__)  # 初始化Poco
-        global poco
-        poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
 
         self.worker.start()
 

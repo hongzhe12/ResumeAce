@@ -168,27 +168,6 @@ class MainWindow(QMainWindow):
         self.ui.start_button.clicked.connect(self.start_tasks)
         self.ui.open_log_button.clicked.connect(self.open_log_file)
         self.ui.stop_button.clicked.connect(self.stop_tasks)
-        # self.ui.add_group.clicked.connect(self.add_group)
-
-        # # 创建抽屉式菜单
-        # self.drawer_menu = DrawerMenu(self)
-        #
-        # # 向侧边栏添加按钮
-        # self.button1 = QPushButton("主页")
-        # self.button1.setMinimumSize(180, 50)
-        # self.button2 = QPushButton("设置")
-        # self.button3 = QPushButton("关于")
-        # self.button1.setStyleSheet("""QPushButton {
-        #     border-width: 0px;
-        #     border-style: none;
-        #     border-color: transparent;
-        #     border-radius: 8px;
-        #     color: rgb(255, 255, 255);
-        #     background-color: rgb(65, 168, 99);
-        # }""")
-        # self.drawer_menu.add_widget(self.button1)
-        # self.drawer_menu.add_widget(self.button2)
-        # self.drawer_menu.add_widget(self.button3)
 
         self.ui.check.clicked.connect(self.check_connection)
 
@@ -243,8 +222,8 @@ class MainWindow(QMainWindow):
         self.worker.task_failed.connect(self.on_task_failed)
         self.worker.progress_updated.connect(self.update_progress)
 
-
         self.worker.start()
+        self.ui.statusbar.showMessage("等待大约30秒，正在初始化...", 5000)
 
     def on_task_completed(self, message):
         """任务完成时的处理"""

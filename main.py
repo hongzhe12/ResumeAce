@@ -5,8 +5,8 @@ import logging
 import subprocess
 import sys
 from typing import List, Optional, Tuple
-from PySide6.QtCore import QThread, Signal, QUrl, QSize, QCoreApplication
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import QThread, Signal, QUrl, QSize, QCoreApplication, QTimer, Qt
+from PySide6.QtGui import QDesktopServices, QPixmap
 from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QVBoxLayout, QLabel, QTextEdit, QDialogButtonBox, \
     QMessageBox, QPushButton, QStyleFactory
 from airtest.core.api import *
@@ -34,11 +34,18 @@ logger.addHandler(file_handler)
 # 任务队列
 task_queue = []
 
+ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
+
+ADB_PATH = "adb" # 开发环境
 
 def check_android_connection() -> bool:
     """检查Android设备是否连接"""
     try:
-        result = subprocess.run(['adb', 'devices'], capture_output=True, text=True)
+        result = subprocess.run(
+            [ADB_PATH, 'devices'],
+            capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+        )
+
         output = result.stdout
 
         # 解析输出，判断是否有设备连接
@@ -165,10 +172,6 @@ class MainWindow(QMainWindow):
 
         # 创建菜单
         # 菜单按钮
-        self.check = QPushButton()
-        self.check.setMinimumSize(QSize(0, 40))
-        self.check.setText("检查连接")
-
         self.open_log_button = QPushButton()
         self.open_log_button.setMinimumSize(QSize(0, 40))
         self.open_log_button.setText("查看日志")
@@ -185,7 +188,7 @@ class MainWindow(QMainWindow):
         	   color: rgb(255, 255, 255);\
         	   background-color: rgb(65, 168, 99);\
            }"
-        self.check.setStyleSheet(btn_style)
+
         self.open_log_button.setStyleSheet(btn_style)
         self.add_group.setStyleSheet(btn_style)
 
@@ -193,7 +196,7 @@ class MainWindow(QMainWindow):
         self.drawer_menu = DrawerMenu(self)
 
         # 向侧边栏添加按钮
-        self.drawer_menu.add_widget(self.check)
+
         self.drawer_menu.add_widget(self.open_log_button)
         self.drawer_menu.add_widget(self.add_group)
 
@@ -201,11 +204,56 @@ class MainWindow(QMainWindow):
         self.ui.add_task_button.clicked.connect(self.add_task)
         self.ui.start_button.clicked.connect(self.start_tasks)
         self.ui.stop_button.clicked.connect(self.stop_tasks)
+        self.ui.connect_button.clicked.connect(self.connect_phone)
 
         # 绑定菜单按钮的槽函数
         self.open_log_button.clicked.connect(self.open_log_file)
-        self.check.clicked.connect(self.check_connection)
         self.add_group.clicked.connect(self.add_group_func)
+
+        # 加载连接状态
+        # 加载图像
+        pixmap = QPixmap(":/icons/images/err.png")
+        pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
+        self.ui.label.setPixmap(pixmap)
+        self.ui.label.setFixedSize(16, 16)
+        self.ui.label.setAlignment(Qt.AlignCenter)
+
+        # 创建一个 QTimer 对象
+        self.timer = QTimer(self)
+        # 设置定时器每 3 秒触发一次
+        self.timer.timeout.connect(self.on_timeout)
+        self.timer.start(2000)
+
+    def connect_phone(self):
+        # 获取用户输入的IP
+        ipaddress = self.ui.ip.text()
+        result = subprocess.run(
+            [ADB_PATH, 'connect',ipaddress],
+            capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+        )
+        print([ADB_PATH, 'connect',ipaddress])
+        self.ui.statusbar.showMessage(result.stdout)
+
+    def on_timeout(self):
+        # 每次定时器触发时更新标签内容
+        if check_android_connection():
+            # 加载图像
+            pixmap = QPixmap(":/icons/images/success.png")
+            pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
+            self.ui.label.setPixmap(pixmap)
+            self.ui.label.setFixedSize(16, 16)
+            self.ui.label.setAlignment(Qt.AlignCenter)
+        else:
+            # 加载图像
+            pixmap = QPixmap(":/icons/images/err.png")
+            pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
+            self.ui.label.setPixmap(pixmap)
+            self.ui.label.setFixedSize(16, 16)
+            self.ui.label.setAlignment(Qt.AlignCenter)
+
+        self.ui.label.update()  # 或使用 repaint()
+
+
 
     def check_connection(self):
         """检查Android设备连接状态"""

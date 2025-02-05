@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>383</width>
-    <height>707</height>
+    <width>460</width>
+    <height>644</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,17 +43,17 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QProgressBar" name="progress_bar"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="filter_label">
-        <property name="text">
-         <string>请输入筛选规则（以空格分隔）:</string>
-        </property>
-       </widget>
-      </item>
+     <widget class="QProgressBar" name="progress_bar"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="filter_label">
+      <property name="text">
+       <string>请输入筛选规则（以空格分隔）:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QLineEdit" name="filter_input">
         <property name="minimumSize">
@@ -80,14 +80,72 @@ QLineEdit:focus {
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="num_tasks_label">
+       <widget class="QPushButton" name="add_task_button">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
         <property name="text">
-         <string>请输入任务数量:</string>
+         <string>添加任务</string>
         </property>
        </widget>
       </item>
+     </layout>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="num_tasks_label">
+      <property name="text">
+       <string>请输入任务数量:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QSpinBox" name="num_tasks_input">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>31</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+QLineEdit:hover {
+    border-color: #999;
+}
+
+QLineEdit:focus {
+    border-color: #4CAF50;
+}</string>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>1000</number>
+      </property>
+      <property name="value">
+       <number>100</number>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="filter_label_2">
+      <property name="text">
+       <string>输入无线调试地址</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QSpinBox" name="num_tasks_input">
+       <widget class="QLineEdit" name="ip">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -109,21 +167,50 @@ QLineEdit:focus {
     border-color: #4CAF50;
 }</string>
         </property>
-        <property name="minimum">
-         <number>1</number>
+        <property name="placeholderText">
+         <string>例如：192.168.1.5:8888</string>
         </property>
-        <property name="maximum">
-         <number>1000</number>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
         </property>
-        <property name="value">
-         <number>100</number>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="resources.qrc">:/icons/images/err.png</pixmap>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="connect_button">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>连接手机</string>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
+    <item row="8" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QPushButton" name="start_button">
         <property name="minimumSize">
@@ -141,6 +228,19 @@ QLineEdit:focus {
        </widget>
       </item>
       <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QPushButton" name="stop_button">
         <property name="minimumSize">
          <size>
@@ -153,42 +253,24 @@ QLineEdit:focus {
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QPushButton" name="add_task_button">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>添加任务</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
    </layout>
-   <zorder>log_output</zorder>
-   <zorder>start_button</zorder>
-   <zorder>stop_button</zorder>
-   <zorder>add_task_button</zorder>
-   <zorder>check</zorder>
-   <zorder>open_log_button</zorder>
-   <zorder>add_group</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>383</width>
+     <width>460</width>
      <height>33</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

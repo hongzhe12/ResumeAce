@@ -5,15 +5,14 @@ import logging
 import subprocess
 import sys
 from typing import List, Optional, Tuple
-
-from PySide6.QtCore import QThread, Signal, QUrl
+from PySide6.QtCore import QThread, Signal, QUrl, QSize, QCoreApplication
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QVBoxLayout, QLabel, QTextEdit, QDialogButtonBox, \
-    QMessageBox
+    QMessageBox, QPushButton, QStyleFactory
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 
-
+from drawermenu import DrawerMenu
 from ui_main_window import Ui_MainWindow
 
 # 配置日志输出到文件
@@ -156,8 +155,6 @@ class TaskWorker(QThread):
             self.progress_updated.emit((i + 1) * 100 // self.num_tasks)
 
 
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -166,15 +163,49 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)  # 设置 UI 布局
 
+        # 创建菜单
+        # 菜单按钮
+        self.check = QPushButton()
+        self.check.setMinimumSize(QSize(0, 40))
+        self.check.setText("检查连接")
+
+        self.open_log_button = QPushButton()
+        self.open_log_button.setMinimumSize(QSize(0, 40))
+        self.open_log_button.setText("查看日志")
+
+        self.add_group = QPushButton()
+        self.add_group.setMinimumSize(QSize(0, 40))
+        self.add_group.setText("加群交流")
+
+        btn_style = "QPushButton {\
+               border-width: 0px;\
+               border-style: none;\
+               border-color: transparent;\
+        	   border-radius:8px;\
+        	   color: rgb(255, 255, 255);\
+        	   background-color: rgb(65, 168, 99);\
+           }"
+        self.check.setStyleSheet(btn_style)
+        self.open_log_button.setStyleSheet(btn_style)
+        self.add_group.setStyleSheet(btn_style)
+
+        # 创建抽屉式菜单
+        self.drawer_menu = DrawerMenu(self)
+
+        # 向侧边栏添加按钮
+        self.drawer_menu.add_widget(self.check)
+        self.drawer_menu.add_widget(self.open_log_button)
+        self.drawer_menu.add_widget(self.add_group)
+
         # 连接信号和槽
         self.ui.add_task_button.clicked.connect(self.add_task)
         self.ui.start_button.clicked.connect(self.start_tasks)
-        self.ui.open_log_button.clicked.connect(self.open_log_file)
         self.ui.stop_button.clicked.connect(self.stop_tasks)
 
-        self.ui.check.clicked.connect(self.check_connection)
-
-
+        # 绑定菜单按钮的槽函数
+        self.open_log_button.clicked.connect(self.open_log_file)
+        self.check.clicked.connect(self.check_connection)
+        self.add_group.clicked.connect(self.add_group_func)
 
     def check_connection(self):
         """检查Android设备连接状态"""
@@ -183,7 +214,7 @@ class MainWindow(QMainWindow):
         else:
             self.ui.statusbar.showMessage("未连接到 Android 设备", 5000)
 
-    def add_group(self):
+    def add_group_func(self):
         """浏览器跳转打开加群链接"""
         url = QUrl("https://qm.qq.com/q/Xdw4VIAIAo")
         QDesktopServices.openUrl(url)
@@ -242,6 +273,7 @@ class MainWindow(QMainWindow):
         """更新进度条"""
         self.ui.progress_bar.setValue(progress)
 
+
 def show_disclaimer():
     disclaimer_text = """免责声明：\n  本程序仅供学习和参考使用，作者不对因使用本程序而产生的任何直接或间接损失负责。继续使用本程序即表示您同意此免责声明。"""
     msg_box = QMessageBox()
@@ -250,17 +282,42 @@ def show_disclaimer():
     msg_box.setText(disclaimer_text)
     msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
     msg_box.setDefaultButton(QMessageBox.Ok)
+
     # 将 OK 按钮的文本修改为“同意”
-    msg_box.button(QMessageBox.Ok).setText("同意")
-    msg_box.button(QMessageBox.Cancel).setText("不同意")
+    ok_button = msg_box.button(QMessageBox.Ok)
+    ok_button.setText("同意")
+
+    # 将 Cancel 按钮的文本修改为“不同意”
+    cancel_button = msg_box.button(QMessageBox.Cancel)
+    cancel_button.setText("不同意")
+
+    # 设置按钮的固定大小
+    ok_button.setFixedSize(100, 30)  # 设置"同意"按钮的大小
+    cancel_button.setFixedSize(100, 30)  # 设置"不同意"按钮的大小
 
     result = msg_box.exec()
     if result == QMessageBox.Ok:
         return True
     else:
         return False
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # 使用 Fusion 样式
+    app.setStyle("Fusion")
+    stylesheet = """
+        QPushButton {
+            background-color: #5c6bc0;
+            color: white;
+            border-radius: 5px;
+        }
+        QPushButton:hover {
+            background-color: #3f51b5;
+        }
+    """
+    app.setStyleSheet(stylesheet)
+
     if show_disclaimer():
         window = MainWindow()
         window.show()

@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>简历投递(开源免费仅用于学习交流)</string>
+   <string>简历助手(开源免费仅用于学习交流)</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QPushButton {
                 background-color: #4CAF50;
                 color: white;
-                border: 1px solid #4CAF50;
+                border: none;
                 border-radius: 5px;
                 padding: 10px 20px;
                 font-size: 14px;
@@ -125,25 +125,15 @@ QLineEdit:focus {
     <item row="2" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QPushButton" name="add_task_button">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>添加任务</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="start_button">
         <property name="minimumSize">
          <size>
           <width>0</width>
           <height>40</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>开始任务</string>
@@ -164,7 +154,7 @@ QLineEdit:focus {
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="add_group">
+       <widget class="QPushButton" name="add_task_button">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -172,39 +162,20 @@ QLineEdit:focus {
          </size>
         </property>
         <property name="text">
-         <string>加群交流</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="open_log_button">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>查看日志文件</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="check">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>检查连接</string>
+         <string>添加任务</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
    </layout>
+   <zorder>log_output</zorder>
+   <zorder>start_button</zorder>
+   <zorder>stop_button</zorder>
+   <zorder>add_task_button</zorder>
+   <zorder>check</zorder>
+   <zorder>open_log_button</zorder>
+   <zorder>add_group</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

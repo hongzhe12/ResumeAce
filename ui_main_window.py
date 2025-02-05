@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
         MainWindow.setStyleSheet(u"QPushButton {\n"
 "                background-color: #4CAF50;\n"
 "                color: white;\n"
-"                border: 1px solid #4CAF50;\n"
+"                border: none;\n"
 "                border-radius: 5px;\n"
 "                padding: 10px 20px;\n"
 "                font-size: 14px;\n"
@@ -116,15 +116,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.add_task_button = QPushButton(self.centralwidget)
-        self.add_task_button.setObjectName(u"add_task_button")
-        self.add_task_button.setMinimumSize(QSize(0, 40))
-
-        self.verticalLayout.addWidget(self.add_task_button)
-
         self.start_button = QPushButton(self.centralwidget)
         self.start_button.setObjectName(u"start_button")
         self.start_button.setMinimumSize(QSize(0, 40))
+        self.start_button.setStyleSheet(u"")
 
         self.verticalLayout.addWidget(self.start_button)
 
@@ -134,28 +129,20 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.stop_button)
 
-        self.add_group = QPushButton(self.centralwidget)
-        self.add_group.setObjectName(u"add_group")
-        self.add_group.setMinimumSize(QSize(0, 40))
+        self.add_task_button = QPushButton(self.centralwidget)
+        self.add_task_button.setObjectName(u"add_task_button")
+        self.add_task_button.setMinimumSize(QSize(0, 40))
 
-        self.verticalLayout.addWidget(self.add_group)
-
-        self.open_log_button = QPushButton(self.centralwidget)
-        self.open_log_button.setObjectName(u"open_log_button")
-        self.open_log_button.setMinimumSize(QSize(0, 40))
-
-        self.verticalLayout.addWidget(self.open_log_button)
-
-        self.check = QPushButton(self.centralwidget)
-        self.check.setObjectName(u"check")
-        self.check.setMinimumSize(QSize(0, 40))
-
-        self.verticalLayout.addWidget(self.check)
+        self.verticalLayout.addWidget(self.add_task_button)
 
 
         self.gridLayout.addLayout(self.verticalLayout, 2, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
+        self.log_output.raise_()
+        self.start_button.raise_()
+        self.stop_button.raise_()
+        self.add_task_button.raise_()
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 383, 33))
@@ -173,11 +160,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"\u7b80\u5386\u6295\u9012(\u5f00\u6e90\u514d\u8d39\u4ec5\u7528\u4e8e\u5b66\u4e60\u4ea4\u6d41)", None))
         self.filter_label.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u8f93\u5165\u7b5b\u9009\u89c4\u5219\uff08\u4ee5\u7a7a\u683c\u5206\u9694\uff09:", None))
         self.num_tasks_label.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u8f93\u5165\u4efb\u52a1\u6570\u91cf:", None))
-        self.add_task_button.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u4efb\u52a1", None))
         self.start_button.setText(QCoreApplication.translate("MainWindow", u"\u5f00\u59cb\u4efb\u52a1", None))
         self.stop_button.setText(QCoreApplication.translate("MainWindow", u"\u505c\u6b62\u4efb\u52a1", None))
-        self.add_group.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u7fa4\u4ea4\u6d41", None))
-        self.open_log_button.setText(QCoreApplication.translate("MainWindow", u"\u67e5\u770b\u65e5\u5fd7\u6587\u4ef6", None))
-        self.check.setText(QCoreApplication.translate("MainWindow", u"\u68c0\u67e5\u8fde\u63a5", None))
+        self.add_task_button.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u4efb\u52a1", None))
     # retranslateUi
 

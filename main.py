@@ -34,7 +34,7 @@ logger.addHandler(file_handler)
 # 任务队列
 task_queue = []
 
-ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
+# ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
 ADB_PATH = "adb" # 开发环境
 
@@ -59,15 +59,12 @@ def check_android_connection() -> bool:
 def add_task(task):
     """向任务队列添加任务"""
     task_queue.append(task)
-    logger.info(f"任务已添加到队列: {task.__name__}")
 
 
 def execute_task(task) -> bool:
     """执行任务并处理异常"""
     try:
-        logger.info(f"开始执行任务: {task.__name__}")
         task()  # 执行任务
-        logger.info(f"任务执行成功: {task.__name__}")
         return True
     except Exception as e:
         logger.error(f"任务执行失败: {task.__name__} - 错误: {e}")
@@ -140,10 +137,8 @@ class TaskWorker(QThread):
     task_failed = Signal(str)  # 任务失败信号
     progress_updated = Signal(int)  # 进度更新信号
 
-    def __init__(self, job_key: List[str], num_tasks: int):
+    def __init__(self, num_tasks: int):
         super().__init__()
-
-        self.job_key = job_key
         self.num_tasks = num_tasks
 
     def run(self):
@@ -154,7 +149,6 @@ class TaskWorker(QThread):
 
         # 执行队列中的任务
         for i in range(self.num_tasks):
-            add_task(lambda: task_job(self.job_key))
             if execute_task(task_queue[i]):
                 self.task_completed.emit(f"任务 {i + 1} 执行成功")
             else:
@@ -289,6 +283,7 @@ class MainWindow(QMainWindow):
         filter_text = self.ui.filter_input.text()
         job_key = filter_text.split(" ") if filter_text else []
         num_tasks = self.ui.num_tasks_input.value()
+        task_queue.clear()
 
         for _ in range(num_tasks):
             add_task(lambda: task_job(job_key))
@@ -297,11 +292,9 @@ class MainWindow(QMainWindow):
 
     def start_tasks(self):
         """启动后台任务线程"""
-        filter_text = self.ui.filter_input.text()
-        job_key = filter_text.split(",") if filter_text else []
         num_tasks = self.ui.num_tasks_input.value()
 
-        self.worker = TaskWorker(job_key, num_tasks)
+        self.worker = TaskWorker(num_tasks)
         self.worker.task_completed.connect(self.on_task_completed)
         self.worker.task_failed.connect(self.on_task_failed)
         self.worker.progress_updated.connect(self.update_progress)

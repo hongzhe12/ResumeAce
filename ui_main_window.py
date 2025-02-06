@@ -50,6 +50,10 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.log_output = QTextEdit(self.centralwidget)
         self.log_output.setObjectName(u"log_output")
+        font = QFont()
+        font.setFamilies([u"\u65b9\u6b63\u7c97\u9ed1\u5b8b\u7b80\u4f53"])
+        font.setPointSize(16)
+        self.log_output.setFont(font)
         self.log_output.setReadOnly(True)
 
         self.gridLayout.addWidget(self.log_output, 0, 0, 1, 1)
@@ -61,6 +65,10 @@ class Ui_MainWindow(object):
 
         self.filter_label = QLabel(self.centralwidget)
         self.filter_label.setObjectName(u"filter_label")
+        font1 = QFont()
+        font1.setFamilies([u"\u534e\u6587\u884c\u6977"])
+        font1.setPointSize(14)
+        self.filter_label.setFont(font1)
 
         self.gridLayout.addWidget(self.filter_label, 2, 0, 1, 1)
 
@@ -88,6 +96,10 @@ class Ui_MainWindow(object):
         self.add_task_button = QPushButton(self.centralwidget)
         self.add_task_button.setObjectName(u"add_task_button")
         self.add_task_button.setMinimumSize(QSize(0, 40))
+        font2 = QFont()
+        font2.setFamilies([u"\u534e\u6587\u884c\u6977"])
+        font2.setBold(True)
+        self.add_task_button.setFont(font2)
 
         self.horizontalLayout.addWidget(self.add_task_button)
 
@@ -96,6 +108,7 @@ class Ui_MainWindow(object):
 
         self.num_tasks_label = QLabel(self.centralwidget)
         self.num_tasks_label.setObjectName(u"num_tasks_label")
+        self.num_tasks_label.setFont(font1)
 
         self.gridLayout.addWidget(self.num_tasks_label, 4, 0, 1, 1)
 
@@ -123,6 +136,7 @@ class Ui_MainWindow(object):
 
         self.filter_label_2 = QLabel(self.centralwidget)
         self.filter_label_2.setObjectName(u"filter_label_2")
+        self.filter_label_2.setFont(font1)
 
         self.gridLayout.addWidget(self.filter_label_2, 6, 0, 1, 1)
 
@@ -158,6 +172,7 @@ class Ui_MainWindow(object):
         self.connect_button = QPushButton(self.centralwidget)
         self.connect_button.setObjectName(u"connect_button")
         self.connect_button.setMinimumSize(QSize(0, 40))
+        self.connect_button.setFont(font2)
         self.connect_button.setAutoDefault(False)
 
         self.horizontalLayout_2.addWidget(self.connect_button)
@@ -170,6 +185,7 @@ class Ui_MainWindow(object):
         self.start_button = QPushButton(self.centralwidget)
         self.start_button.setObjectName(u"start_button")
         self.start_button.setMinimumSize(QSize(0, 40))
+        self.start_button.setFont(font2)
         self.start_button.setStyleSheet(u"")
 
         self.horizontalLayout_3.addWidget(self.start_button)
@@ -181,6 +197,7 @@ class Ui_MainWindow(object):
         self.stop_button = QPushButton(self.centralwidget)
         self.stop_button.setObjectName(u"stop_button")
         self.stop_button.setMinimumSize(QSize(0, 40))
+        self.stop_button.setFont(font2)
 
         self.horizontalLayout_3.addWidget(self.stop_button)
 
@@ -203,6 +220,14 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"\u7b80\u5386\u52a9\u624b(\u5f00\u6e90\u514d\u8d39\u4ec5\u7528\u4e8e\u5b66\u4e60\u4ea4\u6d41)", None))
+        self.log_output.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'\u65b9\u6b63\u7c97\u9ed1\u5b8b\u7b80\u4f53'; font-size:16pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.filter_label.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u8f93\u5165\u7b5b\u9009\u89c4\u5219\uff08\u4ee5\u7a7a\u683c\u5206\u9694\uff09:", None))
         self.add_task_button.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u4efb\u52a1", None))
         self.num_tasks_label.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u8f93\u5165\u4efb\u52a1\u6570\u91cf:", None))

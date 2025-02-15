@@ -5,11 +5,15 @@ import logging
 import subprocess
 import sys
 from typing import List, Optional, Tuple
-from PySide6.QtCore import QThread, Signal, QUrl, QSize, QCoreApplication, QTimer, Qt
-from PySide6.QtGui import QDesktopServices, QPixmap
-from PySide6.QtWidgets import QApplication, QMainWindow, QDialog, QVBoxLayout, QLabel, QTextEdit, QDialogButtonBox, \
-    QMessageBox, QPushButton, QStyleFactory
+
+from PySide6.QtCore import QThread, Signal, QUrl, QSize, QTimer
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QApplication, QPushButton, QGraphicsBlurEffect
+from PySide6.QtWidgets import QMainWindow, QMessageBox
 from airtest.core.api import *
+from openpyxl.workbook import Workbook
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 
 from drawermenu import DrawerMenu
@@ -36,7 +40,14 @@ task_queue = []
 
 # ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
+
 ADB_PATH = "adb" # 开发环境
+
+
+# 创建一个新的 Excel 工作簿和工作表，并添加表头
+wb = Workbook()
+ws = wb.active
+ws.append(["职位名称", "岗位描述", "是否符合筛选条件", "操作结果"])
 
 def check_android_connection() -> bool:
     """检查Android设备是否连接"""
@@ -107,9 +118,22 @@ def filter_job_title(job_name: str, job_key: List[str]) -> bool:
     return any(key in job_name for key in job_key)
 
 
+def write_to_excel(job_name, content, is_match, result):
+    """
+    将信息写入 Excel 文件
+    :param job_name: 职位名称
+    :param content: 岗位描述
+    :param is_match: 是否符合筛选条件
+    :param result: 操作结果
+    """
+    ws.append([job_name, content, is_match, result])
+    wb.save("job_task_info.xlsx")
+
 def task_job(job_key: List[str]):
     """任务：解析页面内容并执行聊天操作"""
     content, btn_chat, job_name = parse_page()
+
+
     if content and btn_chat and job_name:
         logger.info(f"职位名称：: {job_name}")
         logger.info(f"岗位描述: {content}")
@@ -119,16 +143,20 @@ def task_job(job_key: List[str]):
             logger.info(f"解析到内容: {content}")
             btn_chat.click()  # 打招呼
             time.sleep(0.5)  # 等待页面加载
+            write_to_excel(job_name, content, "符合筛选", "成功")  # 写入到Excel
             keyevent("BACK")  # 返回详情页
             time.sleep(0.1)  # 等待页面加载
             swipe_left()  # 向左滑动
             time.sleep(1.5)  # 等待页面加载
         else:
             logger.info(f"职位标题不符合筛选条件，跳过: {job_name}")
+            write_to_excel(job_name, content, "不符合筛选", "成功")  # 写入到Excel
             swipe_left()
     else:
         logger.error("找不到控件，任务失败")  # 如果没有找到控件，任务失败
+        write_to_excel(job_name, content, "任务失败", "失败")  # 写入到Excel
         raise Exception("找不到控件，任务失败")
+
 
 
 class TaskWorker(QThread):
@@ -156,6 +184,9 @@ class TaskWorker(QThread):
             self.progress_updated.emit((i + 1) * 100 // self.num_tasks)
 
 
+
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -174,14 +205,22 @@ class MainWindow(QMainWindow):
         self.add_group.setMinimumSize(QSize(0, 40))
         self.add_group.setText("加群交流")
 
-        btn_style = "QPushButton {\
-               border-width: 0px;\
-               border-style: none;\
-               border-color: transparent;\
-        	   border-radius:8px;\
-        	   color: rgb(255, 255, 255);\
-        	   background-color: rgb(65, 168, 99);\
-           }"
+        btn_style = '''QPushButton {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    border: 1px solid white;
+    padding: 10px 20px;
+    font-size: 12px;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+QPushButton:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+QPushButton:pressed {
+    background-color: rgba(255, 255, 255, 0.6);
+}'''
 
         self.open_log_button.setStyleSheet(btn_style)
         self.add_group.setStyleSheet(btn_style)
@@ -222,10 +261,10 @@ class MainWindow(QMainWindow):
         # 获取用户输入的IP
         ipaddress = self.ui.ip.text()
         result = subprocess.run(
-            [ADB_PATH, 'connect',ipaddress],
+            [ADB_PATH, 'connect', ipaddress],
             capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
         )
-        print([ADB_PATH, 'connect',ipaddress])
+        print([ADB_PATH, 'connect', ipaddress])
         self.ui.statusbar.showMessage(result.stdout)
 
     def on_timeout(self):
@@ -246,8 +285,6 @@ class MainWindow(QMainWindow):
             self.ui.label.setAlignment(Qt.AlignCenter)
 
         self.ui.label.update()  # 或使用 repaint()
-
-
 
     def check_connection(self):
         """检查Android设备连接状态"""
@@ -345,20 +382,6 @@ def show_disclaimer():
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    # 使用 Fusion 样式
-    app.setStyle("Fusion")
-    stylesheet = """
-        QPushButton {
-            background-color: #5c6bc0;
-            color: white;
-            border-radius: 5px;
-        }
-        QPushButton:hover {
-            background-color: #3f51b5;
-        }
-    """
-    app.setStyleSheet(stylesheet)
-
     if show_disclaimer():
         window = MainWindow()
         window.show()

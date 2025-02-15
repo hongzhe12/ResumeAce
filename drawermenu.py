@@ -8,6 +8,7 @@ class DrawerMenu(QFrame):
         super().__init__(parent)
         self.parent = parent
         self.width = width
+        self.is_expanded = False  # 用于跟踪侧边栏的展开状态
         self.initUI(button_icon_path)
         self.parent.resizeEvent = self.on_parent_resize
 
@@ -58,15 +59,22 @@ class DrawerMenu(QFrame):
 
     def toggle_drawer(self):
         """切换侧边栏的展开和收起"""
-        current_pos = self.geometry().x()
-        if current_pos < 0:
-            # 如果侧边栏在视图外面，展开侧边栏
-            self.animation.setStartValue(QRect(-self.width, 0, self.width, self.parent.height()))
-            self.animation.setEndValue(QRect(0, 0, self.width, self.parent.height()))
+        if self.is_expanded:
+            self.collapse_drawer()
         else:
-            # 如果侧边栏已经展开，收起侧边栏
-            self.animation.setStartValue(QRect(0, 0, self.width, self.parent.height()))
-            self.animation.setEndValue(QRect(-self.width, 0, self.width, self.parent.height()))
+            self.expand_drawer()
+        self.is_expanded = not self.is_expanded
+
+    def expand_drawer(self):
+        """展开侧边栏"""
+        self.animation.setStartValue(QRect(-self.width, 0, self.width, self.parent.height()))
+        self.animation.setEndValue(QRect(0, 0, self.width, self.parent.height()))
+        self.animation.start()
+
+    def collapse_drawer(self):
+        """收起侧边栏"""
+        self.animation.setStartValue(QRect(0, 0, self.width, self.parent.height()))
+        self.animation.setEndValue(QRect(-self.width, 0, self.width, self.parent.height()))
         self.animation.start()
 
     def update_button_position(self):

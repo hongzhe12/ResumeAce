@@ -26,24 +26,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(460, 644)
-        MainWindow.setStyleSheet(u"QPushButton {\n"
-"                background-color: #4CAF50;\n"
-"                color: white;\n"
-"                border: none;\n"
-"                border-radius: 5px;\n"
-"                padding: 10px 20px;\n"
-"                font-size: 14px;\n"
-"                font-weight: bold;\n"
-"                transition: background-color 0.3s, border-color 0.3s;\n"
-"            }\n"
-"            QPushButton:hover {\n"
-"                background-color: #45a049;\n"
-"                border-color: #45a049;\n"
-"            }\n"
-"            QPushButton:pressed {\n"
-"                background-color: #3e8e41;\n"
-"                border-color: #3e8e41;\n"
-"            }")
+        MainWindow.setStyleSheet(u"")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -51,8 +34,7 @@ class Ui_MainWindow(object):
         self.log_output = QTextEdit(self.centralwidget)
         self.log_output.setObjectName(u"log_output")
         font = QFont()
-        font.setFamilies([u"\u65b9\u6b63\u7c97\u9ed1\u5b8b\u7b80\u4f53"])
-        font.setPointSize(16)
+        font.setPointSize(12)
         self.log_output.setFont(font)
         self.log_output.setReadOnly(True)
 
@@ -60,15 +42,26 @@ class Ui_MainWindow(object):
 
         self.progress_bar = QProgressBar(self.centralwidget)
         self.progress_bar.setObjectName(u"progress_bar")
+        self.progress_bar.setMinimumSize(QSize(0, 0))
+        self.progress_bar.setStyleSheet(u"QProgressBar {\n"
+"    border: 1px solid grey;\n"
+"    border-radius: 5px;\n"
+"	background-color: rgb(243, 243, 243);\n"
+"    text-align: center;\n"
+"}\n"
+"\n"
+"QProgressBar::chunk {\n"
+"    background-color: #007BFF;\n"
+"    width: 20px;\n"
+"    margin: 0.5px;\n"
+"}")
+        self.progress_bar.setValue(0)
 
         self.gridLayout.addWidget(self.progress_bar, 1, 0, 1, 1)
 
         self.filter_label = QLabel(self.centralwidget)
         self.filter_label.setObjectName(u"filter_label")
-        font1 = QFont()
-        font1.setFamilies([u"\u534e\u6587\u884c\u6977"])
-        font1.setPointSize(14)
-        self.filter_label.setFont(font1)
+        self.filter_label.setFont(font)
 
         self.gridLayout.addWidget(self.filter_label, 2, 0, 1, 1)
 
@@ -96,10 +89,9 @@ class Ui_MainWindow(object):
         self.add_task_button = QPushButton(self.centralwidget)
         self.add_task_button.setObjectName(u"add_task_button")
         self.add_task_button.setMinimumSize(QSize(0, 40))
-        font2 = QFont()
-        font2.setFamilies([u"\u534e\u6587\u884c\u6977"])
-        font2.setBold(True)
-        self.add_task_button.setFont(font2)
+        font1 = QFont()
+        font1.setPointSize(10)
+        self.add_task_button.setFont(font1)
 
         self.horizontalLayout.addWidget(self.add_task_button)
 
@@ -108,7 +100,7 @@ class Ui_MainWindow(object):
 
         self.num_tasks_label = QLabel(self.centralwidget)
         self.num_tasks_label.setObjectName(u"num_tasks_label")
-        self.num_tasks_label.setFont(font1)
+        self.num_tasks_label.setFont(font)
 
         self.gridLayout.addWidget(self.num_tasks_label, 4, 0, 1, 1)
 
@@ -136,7 +128,7 @@ class Ui_MainWindow(object):
 
         self.filter_label_2 = QLabel(self.centralwidget)
         self.filter_label_2.setObjectName(u"filter_label_2")
-        self.filter_label_2.setFont(font1)
+        self.filter_label_2.setFont(font)
 
         self.gridLayout.addWidget(self.filter_label_2, 6, 0, 1, 1)
 
@@ -172,7 +164,7 @@ class Ui_MainWindow(object):
         self.connect_button = QPushButton(self.centralwidget)
         self.connect_button.setObjectName(u"connect_button")
         self.connect_button.setMinimumSize(QSize(0, 40))
-        self.connect_button.setFont(font2)
+        self.connect_button.setFont(font1)
         self.connect_button.setAutoDefault(False)
 
         self.horizontalLayout_2.addWidget(self.connect_button)
@@ -185,7 +177,7 @@ class Ui_MainWindow(object):
         self.start_button = QPushButton(self.centralwidget)
         self.start_button.setObjectName(u"start_button")
         self.start_button.setMinimumSize(QSize(0, 40))
-        self.start_button.setFont(font2)
+        self.start_button.setFont(font1)
         self.start_button.setStyleSheet(u"")
 
         self.horizontalLayout_3.addWidget(self.start_button)
@@ -197,7 +189,7 @@ class Ui_MainWindow(object):
         self.stop_button = QPushButton(self.centralwidget)
         self.stop_button.setObjectName(u"stop_button")
         self.stop_button.setMinimumSize(QSize(0, 40))
-        self.stop_button.setFont(font2)
+        self.stop_button.setFont(font1)
 
         self.horizontalLayout_3.addWidget(self.stop_button)
 
@@ -226,8 +218,8 @@ class Ui_MainWindow(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'\u65b9\u6b63\u7c97\u9ed1\u5b8b\u7b80\u4f53'; font-size:16pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'Microsoft YaHei UI'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'\u65b9\u6b63\u7c97\u9ed1\u5b8b\u7b80\u4f53'; font-size:16pt;\"><br /></span></p></body></html>", None))
         self.filter_label.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u8f93\u5165\u7b5b\u9009\u89c4\u5219\uff08\u4ee5\u7a7a\u683c\u5206\u9694\uff09:", None))
         self.add_task_button.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u4efb\u52a1", None))
         self.num_tasks_label.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u8f93\u5165\u4efb\u52a1\u6570\u91cf:", None))

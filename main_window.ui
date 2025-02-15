@@ -14,24 +14,7 @@
    <string>简历助手(开源免费仅用于学习交流)</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton {
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 10px 20px;
-                font-size: 14px;
-                font-weight: bold;
-                transition: background-color 0.3s, border-color 0.3s;
-            }
-            QPushButton:hover {
-                background-color: #45a049;
-                border-color: #45a049;
-            }
-            QPushButton:pressed {
-                background-color: #3e8e41;
-                border-color: #3e8e41;
-            }</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -39,8 +22,7 @@
      <widget class="QTextEdit" name="log_output">
       <property name="font">
        <font>
-        <family>方正粗黑宋简体</family>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="readOnly">
@@ -53,20 +35,43 @@ p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
 li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'方正粗黑宋简体'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Microsoft YaHei UI'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'方正粗黑宋简体'; font-size:16pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QProgressBar" name="progress_bar"/>
+     <widget class="QProgressBar" name="progress_bar">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QProgressBar {
+    border: 1px solid grey;
+    border-radius: 5px;
+	background-color: rgb(243, 243, 243);
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: #007BFF;
+    width: 20px;
+    margin: 0.5px;
+}</string>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="filter_label">
       <property name="font">
        <font>
-        <family>华文行楷</family>
-        <pointsize>14</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="text">
@@ -111,9 +116,7 @@ QLineEdit:focus {
         </property>
         <property name="font">
          <font>
-          <family>华文行楷</family>
-          <pointsize>-1</pointsize>
-          <bold>true</bold>
+          <pointsize>10</pointsize>
          </font>
         </property>
         <property name="text">
@@ -127,8 +130,7 @@ QLineEdit:focus {
      <widget class="QLabel" name="num_tasks_label">
       <property name="font">
        <font>
-        <family>华文行楷</family>
-        <pointsize>14</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="text">
@@ -174,8 +176,7 @@ QLineEdit:focus {
      <widget class="QLabel" name="filter_label_2">
       <property name="font">
        <font>
-        <family>华文行楷</family>
-        <pointsize>14</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="text">
@@ -242,9 +243,7 @@ QLineEdit:focus {
         </property>
         <property name="font">
          <font>
-          <family>华文行楷</family>
-          <pointsize>-1</pointsize>
-          <bold>true</bold>
+          <pointsize>10</pointsize>
          </font>
         </property>
         <property name="text">
@@ -269,9 +268,7 @@ QLineEdit:focus {
         </property>
         <property name="font">
          <font>
-          <family>华文行楷</family>
-          <pointsize>-1</pointsize>
-          <bold>true</bold>
+          <pointsize>10</pointsize>
          </font>
         </property>
         <property name="styleSheet">
@@ -305,9 +302,7 @@ QLineEdit:focus {
         </property>
         <property name="font">
          <font>
-          <family>华文行楷</family>
-          <pointsize>-1</pointsize>
-          <bold>true</bold>
+          <pointsize>10</pointsize>
          </font>
         </property>
         <property name="text">

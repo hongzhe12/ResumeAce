@@ -4,17 +4,18 @@ __author__ = "hongzhe"
 import logging
 import subprocess
 import sys
-from typing import List, Optional, Tuple
+from datetime import datetime
+from typing import List, Union, Any
 
 from PySide6.QtCore import QThread, Signal, QUrl, QSize, QTimer
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QPushButton, QGraphicsBlurEffect
+from PySide6.QtWidgets import QApplication, QPushButton
 from PySide6.QtWidgets import QMainWindow, QMessageBox
 from airtest.core.api import *
-from openpyxl.workbook import Workbook
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
+from poco.proxy import UIObjectProxy
 
 from drawermenu import DrawerMenu
 from ui_main_window import Ui_MainWindow
@@ -41,13 +42,30 @@ task_queue = []
 # ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
 
-ADB_PATH = "adb" # 开发环境
+ADB_PATH = "adb"  # 开发环境
 
 
-# 创建一个新的 Excel 工作簿和工作表，并添加表头
-wb = Workbook()
-ws = wb.active
-ws.append(["职位名称", "岗位描述", "是否符合筛选条件", "操作结果"])
+
+
+def is_range_within(range1, range2):
+    range1 = range1.replace("元","")
+
+    # 解析第一个范围
+    try:
+        min1, max1 = map(int, range1.split('-'))
+    except ValueError:
+        print(f"输入的范围 {range1} 格式不正确，请使用 '最小值-最大值' 的格式。")
+        return False
+
+    # 解析第二个范围
+    try:
+        min2, max2 = map(int, range2.split('-'))
+    except ValueError:
+        print(f"输入的范围 {range2} 格式不正确，请使用 '最小值-最大值' 的格式。")
+        return False
+
+    # 判断第一个范围是否在第二个范围内
+    return min2 <= min1 and max1 <= max2
 
 def check_android_connection() -> bool:
     """检查Android设备是否连接"""
@@ -95,20 +113,26 @@ def swipe_left():
     tv_job_name.swipe([-0.9, -0.1], duration=0.1)
 
 
-def parse_page() -> Tuple[Optional[str], Optional[str], Optional[str]]:
+def parse_page() -> Union[tuple[None, None, None], tuple[Union[str, Any], UIObjectProxy, str, str, str, str]]:
     """解析工作详情页"""
     try:
         tv_job_name = poco("com.hpbr.bosszhipin:id/tv_job_name", type="android.widget.TextView")
         tv_description = poco("com.hpbr.bosszhipin:id/tv_description").attr('text') if poco(
             "com.hpbr.bosszhipin:id/tv_description").exists() else "暂无描述"
         btn_chat = poco("com.hpbr.bosszhipin:id/btn_chat")
+
+        job_salary = poco("com.hpbr.bosszhipin:id/tv_job_salary").get_text()
+        location = poco("com.hpbr.bosszhipin:id/tv_required_location").get_text()
+        boss_name = poco("com.hpbr.bosszhipin:id/tv_boss_name").get_text()
+
+
     except Exception as e:
         logger.error(f"控件查找失败: {e}")
         return None, None, None
 
     if btn_chat:
         job_name = tv_job_name.get_text() if tv_job_name else ''
-        return tv_description, btn_chat, job_name
+        return tv_description, btn_chat, job_name,job_salary,location,boss_name
 
     return None, None, None
 
@@ -117,46 +141,74 @@ def filter_job_title(job_name: str, job_key: List[str]) -> bool:
     """根据用户提供的筛选规则对职位标题进行筛选"""
     return any(key in job_name for key in job_key)
 
+def filter_job(content: str, job_key: List[str]) -> bool:
+    """根据用户提供的筛选规则对职位标题进行筛选"""
+    return any(key in content for key in job_key)
 
-def write_to_excel(job_name, content, is_match, result):
-    """
-    将信息写入 Excel 文件
-    :param job_name: 职位名称
-    :param content: 岗位描述
-    :param is_match: 是否符合筛选条件
-    :param result: 操作结果
-    """
-    ws.append([job_name, content, is_match, result])
-    wb.save("job_task_info.xlsx")
+import csv
 
-def task_job(job_key: List[str]):
+def append_to_csv(file_path, data: list, header=None) -> None:
+    """
+    该函数用于将数据追加写入到指定的 CSV 文件中。
+
+    :param file_path: 要写入的 CSV 文件的路径
+    :param data: 要写入的数据，应为可迭代对象，如列表或元组，其中每个元素代表一行数据
+    :param header: 可选参数，CSV 文件的表头，为列表或元组类型
+    """
+    try:
+        file_exists = os.path.exists(file_path)
+        # 以追加模式打开 CSV 文件，使用 newline='' 避免在 Windows 系统下出现多余的空行
+        with open(file_path, mode='a', newline='', encoding='utf-8') as csvfile:
+            # 创建一个 CSV 写入器对象
+            writer = csv.writer(csvfile)
+            # 如果文件不存在且提供了表头，则写入表头
+            if not file_exists and header:
+                writer.writerow(header)
+
+            writer.writerow(data)
+        print(f"数据已成功追加到 {file_path}")
+    except Exception as e:
+        print(f"写入 CSV 文件时出现错误: {e}")
+
+def task_job(job_key: List[str],job_key_2:str):
     """任务：解析页面内容并执行聊天操作"""
-    content, btn_chat, job_name = parse_page()
-
+    content, btn_chat, job_name,job_salary,location,boss_name = parse_page()
 
     if content and btn_chat and job_name:
         logger.info(f"职位名称：: {job_name}")
         logger.info(f"岗位描述: {content}")
+        logger.info(f"岗位薪资: {job_salary}")
+        logger.info(f"工作地点: {location}")
+        logger.info(f"招聘者姓名: {boss_name}")
+
     if content and job_name:
-        if filter_job_title(job_name, job_key):  # 筛选标题是否符合条件
+
+        if filter_job_title(job_name, job_key) and is_range_within(job_salary,job_key_2):  # 筛选标题是否符合条件
             logger.info(f"职位标题符合筛选条件: {job_name}")
             logger.info(f"解析到内容: {content}")
             btn_chat.click()  # 打招呼
             time.sleep(0.5)  # 等待页面加载
-            write_to_excel(job_name, content, "符合筛选", "成功")  # 写入到Excel
             keyevent("BACK")  # 返回详情页
             time.sleep(0.1)  # 等待页面加载
             swipe_left()  # 向左滑动
             time.sleep(1.5)  # 等待页面加载
+
+
+            # 获取当前日期
+            current_date = datetime.now().strftime("%Y-%m-%d")
+            # 生成文件名
+            file_path = f"{current_date}已投名单.csv"
+            append_to_csv(file_path,[job_name,content,job_salary,location,boss_name],
+                          header=["岗位名称","工作内容","薪水","位置","招聘者姓名"])
+
+
         else:
             logger.info(f"职位标题不符合筛选条件，跳过: {job_name}")
-            write_to_excel(job_name, content, "不符合筛选", "成功")  # 写入到Excel
+
             swipe_left()
     else:
         logger.error("找不到控件，任务失败")  # 如果没有找到控件，任务失败
-        write_to_excel(job_name, content, "任务失败", "失败")  # 写入到Excel
         raise Exception("找不到控件，任务失败")
-
 
 
 class TaskWorker(QThread):
@@ -175,6 +227,7 @@ class TaskWorker(QThread):
         global poco
         poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
 
+
         # 执行队列中的任务
         for i in range(self.num_tasks):
             if execute_task(task_queue[i]):
@@ -182,9 +235,6 @@ class TaskWorker(QThread):
             else:
                 self.task_failed.emit(f"任务 {i + 1} 执行失败")
             self.progress_updated.emit((i + 1) * 100 // self.num_tasks)
-
-
-
 
 
 class MainWindow(QMainWindow):
@@ -207,11 +257,13 @@ class MainWindow(QMainWindow):
 
         btn_style = '''QPushButton {
     background-color: rgba(255, 255, 255, 0.2);
-    color: black;
+    color: white;
     border: 1px solid white;
     padding: 10px 20px;
     font-size: 12px;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    font-weight:bold;
+    border-radius: 5px;
+
 }
 
 QPushButton:hover {
@@ -222,8 +274,8 @@ QPushButton:pressed {
     background-color: rgba(255, 255, 255, 0.6);
 }'''
 
-        self.open_log_button.setStyleSheet(btn_style)
-        self.add_group.setStyleSheet(btn_style)
+        # self.open_log_button.setStyleSheet(btn_style)
+        # self.add_group.setStyleSheet(btn_style)
 
         # 创建抽屉式菜单
         self.drawer_menu = DrawerMenu(self)
@@ -318,14 +370,18 @@ QPushButton:pressed {
     def add_task(self):
         """向队列添加任务"""
         filter_text = self.ui.filter_input.text()
+        filter_text_2 = self.ui.filter_input_2.text()
         job_key = filter_text.split(" ") if filter_text else []
+
+        job_key_2 = filter_text_2 if filter_text_2 else None
+
         num_tasks = self.ui.num_tasks_input.value()
         task_queue.clear()
 
         for _ in range(num_tasks):
-            add_task(lambda: task_job(job_key))
+            add_task(lambda: task_job(job_key,job_key_2))
 
-        self.ui.log_output.append(f"已添加 {num_tasks} 个任务，筛选规则: {job_key}")
+        self.ui.log_output.append(f"已添加 {num_tasks} 个任务，标题: {job_key}，薪水：{job_key_2}")
 
     def start_tasks(self):
         """启动后台任务线程"""

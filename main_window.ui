@@ -6,15 +6,55 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
-    <height>644</height>
+    <width>437</width>
+    <height>743</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>简历助手(开源免费仅用于学习交流)</string>
+   <string>简历助手(仅用于学习交流)</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">/* 整体窗口背景色 */
+QWidget {
+    background - color: #f0f0f0;
+}
+
+/* 标签样式 */
+QLabel {
+    color: #333333;
+    font - size: 12pt;
+    padding: 5px;
+}
+
+/* 输入框样式 */
+QLineEdit {
+    background - color: white;
+    border: 1px solid #ccc;
+    border - radius: 3px;
+    padding: 3px;
+}
+
+
+
+QPushButton:hover {
+    background - color: #45a049; /* 鼠标悬停时的颜色 */
+}
+
+QPushButton:pressed {
+    background - color: #388e3c; /* 按下时的颜色 */
+}
+
+/* 进度条样式 */
+QProgressBar {
+    border: 1px solid #ccc;
+    border - radius: 3px;
+    background - color: white;
+    text - align: center;
+}
+
+QProgressBar::chunk {
+    background - color: #007bff;
+}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -68,124 +108,180 @@ QProgressBar::chunk {
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="filter_label">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>添加规则</string>
       </property>
-      <property name="text">
-       <string>请输入筛选规则（以空格分隔）:</string>
-      </property>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="filter_label">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>筛选标题</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="filter_input">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>31</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLineEdit {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+QLineEdit:hover {
+    border-color: #999;
+}
+
+QLineEdit:focus {
+    border-color: #4CAF50;
+}</string>
+         </property>
+         <property name="inputMask">
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>例如：java 开发（以空格分隔）</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="filter_label_3">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>筛选薪水</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="filter_input_2">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>31</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLineEdit {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+QLineEdit:hover {
+    border-color: #999;
+}
+
+QLineEdit:focus {
+    border-color: #4CAF50;
+}</string>
+         </property>
+         <property name="placeholderText">
+          <string>例如：1000-2000</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="num_tasks_label">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>任务数量</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="num_tasks_input">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>31</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLineEdit {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+QLineEdit:hover {
+    border-color: #999;
+}
+
+QLineEdit:focus {
+    border-color: #4CAF50;
+}</string>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="add_task_button">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>点击添加</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </item>
     <item row="3" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLineEdit" name="filter_input">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>31</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QLineEdit {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-QLineEdit:hover {
-    border-color: #999;
-}
-
-QLineEdit:focus {
-    border-color: #4CAF50;
-}</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="add_task_button">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>添加任务</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="num_tasks_label">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>请输入任务数量:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QSpinBox" name="num_tasks_input">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLineEdit {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-QLineEdit:hover {
-    border-color: #999;
-}
-
-QLineEdit:focus {
-    border-color: #4CAF50;
-}</string>
-      </property>
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>1000</number>
-      </property>
-      <property name="value">
-       <number>100</number>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="filter_label_2">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>输入无线调试地址</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QLineEdit" name="ip">
         <property name="minimumSize">
@@ -208,6 +304,9 @@ QLineEdit:hover {
 QLineEdit:focus {
     border-color: #4CAF50;
 }</string>
+        </property>
+        <property name="text">
+         <string/>
         </property>
         <property name="placeholderText">
          <string>例如：192.168.1.5:8888</string>
@@ -256,8 +355,8 @@ QLineEdit:focus {
       </item>
      </layout>
     </item>
-    <item row="8" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item row="4" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QPushButton" name="start_button">
         <property name="minimumSize">
@@ -319,7 +418,7 @@ QLineEdit:focus {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>460</width>
+     <width>437</width>
      <height>33</height>
     </rect>
    </property>

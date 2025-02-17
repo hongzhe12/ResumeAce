@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>简历助手(仅用于学习交流)</string>
+   <string>简历助手v1.5(仅用于学习交流)</string>
   </property>
   <property name="styleSheet">
    <string notr="true">/* 整体窗口背景色 */

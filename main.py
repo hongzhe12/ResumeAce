@@ -9,9 +9,9 @@ from typing import List, Union, Any
 
 from PySide6.QtCore import QThread, Signal, QUrl, QSize, QTimer
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QDesktopServices, QClipboard
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QPushButton
+from PySide6.QtWidgets import QApplication, QPushButton, QDialog, QVBoxLayout, QLineEdit, QHBoxLayout
 from PySide6.QtWidgets import QMainWindow, QMessageBox
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
@@ -39,13 +39,30 @@ logger.addHandler(file_handler)
 # 任务队列
 task_queue = []
 
-# ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
+
 
 
 ADB_PATH = "adb"  # 开发环境
 
 
+# ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
+
+from PySide6.QtCore import QObject, Signal
+
+
+import psutil
+
+def is_scrcpy_running():
+    # 遍历所有正在运行的进程
+    for proc in psutil.process_iter(['name']):
+        try:
+            # 检查进程名称是否为 scrcpy.exe
+            if proc.info['name'] == 'scrcpy.exe':
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return False
 
 def is_range_within(range1, range2):
     range1 = range1.replace("元","")
@@ -79,6 +96,12 @@ def check_android_connection() -> bool:
 
         # 解析输出，判断是否有设备连接
         lines = output.strip().split('\n')[1:]  # 去掉第一行标题
+
+        if not is_scrcpy_running():
+            # 使用 subprocess.Popen 非阻塞地启动 scrcpy.exe
+            subprocess.Popen([os.path.join("scrcpy-win64-v3.1", "scrcpy.exe")],
+                             creationflags=subprocess.CREATE_NO_WINDOW)
+
         return any(line.strip() and 'device' in line for line in lines)
     except Exception as e:
         logger.error(f"检查连接时出错: {e}")
@@ -255,6 +278,14 @@ class MainWindow(QMainWindow):
         self.add_group.setMinimumSize(QSize(0, 40))
         self.add_group.setText("加群交流")
 
+        self.open_csv = QPushButton()
+        self.open_csv.setMinimumSize(QSize(0, 40))
+        self.open_csv.setText("打开文件")
+
+        self.show_path = QPushButton()
+        self.show_path.setMinimumSize(QSize(0, 40))
+        self.show_path.setText("获取更新路径")
+
         btn_style = '''QPushButton {
     background-color: rgba(255, 255, 255, 0.2);
     color: white;
@@ -284,6 +315,8 @@ QPushButton:pressed {
 
         self.drawer_menu.add_widget(self.open_log_button)
         self.drawer_menu.add_widget(self.add_group)
+        self.drawer_menu.add_widget(self.open_csv)
+        self.drawer_menu.add_widget(self.show_path)
 
         # 连接信号和槽
         self.ui.add_task_button.clicked.connect(self.add_task)
@@ -294,6 +327,8 @@ QPushButton:pressed {
         # 绑定菜单按钮的槽函数
         self.open_log_button.clicked.connect(self.open_log_file)
         self.add_group.clicked.connect(self.add_group_func)
+        self.open_csv.clicked.connect(self.open_excel_file)
+        self.show_path.clicked.connect(self.start_update)
 
         # 加载连接状态
         # 加载图像
@@ -308,6 +343,22 @@ QPushButton:pressed {
         # 设置定时器每 3 秒触发一次
         self.timer.timeout.connect(self.on_timeout)
         self.timer.start(2000)
+
+
+    def start_update(self):
+        # 显示文件所在路径
+        path = os.path.dirname(os.path.abspath(__file__))
+        clipboard = QClipboard()
+        clipboard.setText(path)
+        # 弹出复制成功
+        QMessageBox.information(self, "复制成功", "路径已复制到剪贴板")
+
+    def open_excel_file(self):
+        # 获取当前日期
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        # 生成文件名
+        file_path = f"{current_date}已投名单.csv"
+        os.startfile(file_path)
 
     def connect_phone(self):
         # 获取用户输入的IP
@@ -435,8 +486,8 @@ def show_disclaimer():
     else:
         return False
 
-
 if __name__ == "__main__":
+    # 调试：C:\Users\hongz\Downloads\简历助手\python-embed\python.exe C:\Users\hongz\Downloads\简历助手\src\main.py
     app = QApplication(sys.argv)
     if show_disclaimer():
         window = MainWindow()

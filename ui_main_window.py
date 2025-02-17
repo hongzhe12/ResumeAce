@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(600, 800)
+        MainWindow.resize(437, 743)
         MainWindow.setStyleSheet(u"/* \u6574\u4f53\u7a97\u53e3\u80cc\u666f\u8272 */\n"
 "QWidget {\n"
 "    background - color: #f0f0f0;\n"
@@ -154,34 +154,13 @@ class Ui_MainWindow(object):
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.filter_input_2)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_2)
-
-        self.add_task_button = QPushButton(self.groupBox)
-        self.add_task_button.setObjectName(u"add_task_button")
-        self.add_task_button.setMinimumSize(QSize(0, 40))
-        font1 = QFont()
-        font1.setPointSize(10)
-        self.add_task_button.setFont(font1)
-
-        self.horizontalLayout.addWidget(self.add_task_button)
-
-
-        self.formLayout.setLayout(2, QFormLayout.SpanningRole, self.horizontalLayout)
-
-
-        self.gridLayout.addWidget(self.groupBox, 2, 0, 1, 1)
-
-        self.num_tasks_label = QLabel(self.centralwidget)
+        self.num_tasks_label = QLabel(self.groupBox)
         self.num_tasks_label.setObjectName(u"num_tasks_label")
         self.num_tasks_label.setFont(font)
 
-        self.gridLayout.addWidget(self.num_tasks_label, 3, 0, 1, 1)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.num_tasks_label)
 
-        self.num_tasks_input = QSpinBox(self.centralwidget)
+        self.num_tasks_input = QSpinBox(self.groupBox)
         self.num_tasks_input.setObjectName(u"num_tasks_input")
         self.num_tasks_input.setMinimumSize(QSize(0, 31))
         self.num_tasks_input.setStyleSheet(u"QLineEdit {\n"
@@ -201,13 +180,28 @@ class Ui_MainWindow(object):
         self.num_tasks_input.setMaximum(1000)
         self.num_tasks_input.setValue(100)
 
-        self.gridLayout.addWidget(self.num_tasks_input, 4, 0, 1, 1)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.num_tasks_input)
 
-        self.filter_label_2 = QLabel(self.centralwidget)
-        self.filter_label_2.setObjectName(u"filter_label_2")
-        self.filter_label_2.setFont(font)
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addWidget(self.filter_label_2, 5, 0, 1, 1)
+        self.horizontalLayout.addItem(self.horizontalSpacer_2)
+
+        self.add_task_button = QPushButton(self.groupBox)
+        self.add_task_button.setObjectName(u"add_task_button")
+        self.add_task_button.setMinimumSize(QSize(0, 40))
+        font1 = QFont()
+        font1.setPointSize(10)
+        self.add_task_button.setFont(font1)
+
+        self.horizontalLayout.addWidget(self.add_task_button)
+
+
+        self.formLayout.setLayout(3, QFormLayout.SpanningRole, self.horizontalLayout)
+
+
+        self.gridLayout.addWidget(self.groupBox, 2, 0, 1, 1)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
@@ -247,7 +241,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.connect_button)
 
 
-        self.gridLayout.addLayout(self.horizontalLayout_3, 6, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -271,12 +265,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.stop_button)
 
 
-        self.gridLayout.addLayout(self.horizontalLayout_2, 7, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 600, 33))
+        self.menubar.setGeometry(QRect(0, 0, 437, 33))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -288,7 +282,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"\u7b80\u5386\u52a9\u624b(\u4ec5\u7528\u4e8e\u5b66\u4e60\u4ea4\u6d41)", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"\u7b80\u5386\u52a9\u624bv1.5(\u4ec5\u7528\u4e8e\u5b66\u4e60\u4ea4\u6d41)", None))
         self.log_output.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -303,9 +297,8 @@ class Ui_MainWindow(object):
         self.filter_input.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u4f8b\u5982\uff1ajava \u5f00\u53d1\uff08\u4ee5\u7a7a\u683c\u5206\u9694\uff09", None))
         self.filter_label_3.setText(QCoreApplication.translate("MainWindow", u"\u7b5b\u9009\u85aa\u6c34", None))
         self.filter_input_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u4f8b\u5982\uff1a1000-2000", None))
+        self.num_tasks_label.setText(QCoreApplication.translate("MainWindow", u"\u4efb\u52a1\u6570\u91cf", None))
         self.add_task_button.setText(QCoreApplication.translate("MainWindow", u"\u70b9\u51fb\u6dfb\u52a0", None))
-        self.num_tasks_label.setText(QCoreApplication.translate("MainWindow", u"\u4efb\u52a1\u6570\u91cf:", None))
-        self.filter_label_2.setText(QCoreApplication.translate("MainWindow", u"\u65e0\u7ebf\u8c03\u8bd5\u5730\u5740\uff08\u6709\u7ebf\u4e0d\u9700\u8981\uff09", None))
         self.ip.setText("")
         self.ip.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u4f8b\u5982\uff1a192.168.1.5:8888", None))
         self.label.setText("")

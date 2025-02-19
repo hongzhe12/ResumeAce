@@ -16,26 +16,8 @@
   <property name="styleSheet">
    <string notr="true">/* 主窗口样式 */
 QWidget {
-    background-color: #F0F0F0; /* 主窗口背景颜色 */
+    background-color: white; /* 主窗口背景颜色 */
     color: #333333; /* 主窗口文字颜色 */
-}
-
-/* 按钮样式 */
-QPushButton {
-    background-color: #1296db; /* 按钮背景颜色 */
-    color: white; /* 按钮文字颜色 */
-    border: none; /* 去除边框 */
-    border-radius: 5px; /* 按钮圆角 */
-    padding: 8px 10px; /* 按钮内边距 */
-    min-width: 80px; /* 按钮最小宽度 */
-}
-
-QPushButton:hover {
-    background-color: #0d7ab4; /* 鼠标悬停时按钮背景颜色 */
-}
-
-QPushButton:pressed {
-    background-color: #0a608e; /* 按钮按下时背景颜色 */
 }
 
 /* 标签样式 */
@@ -201,7 +183,7 @@ QProgressBar::chunk {
       <widget class="QPushButton" name="connect_button">
        <property name="minimumSize">
         <size>
-         <width>90</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
@@ -246,7 +228,7 @@ QPushButton:pressed {
       <widget class="QPushButton" name="add_task_button">
        <property name="minimumSize">
         <size>
-         <width>90</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
@@ -291,7 +273,7 @@ QPushButton:pressed {
       <widget class="QPushButton" name="start_button">
        <property name="minimumSize">
         <size>
-         <width>90</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
@@ -336,7 +318,7 @@ QPushButton:pressed {
       <widget class="QPushButton" name="stop_button">
        <property name="minimumSize">
         <size>
-         <width>90</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>

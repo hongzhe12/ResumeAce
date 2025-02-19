@@ -419,14 +419,20 @@ QPushButton:pressed {
         # 获取布局对象
         layout = self.ui.gridLayout
         self.cb = ChatBox()
+
+
         # 将 ChatBox 实例添加到布局的第一行第一列，占据一行一列
         layout.addWidget(self.cb, 0, 0, 1, 1)
         # 调整层级关系，将 ChatBox 放在 other_widget 后面
         self.cb.stackUnder(self.drawer_menu)
+        # 初始化欢迎语句
+        self.cb.send_message(False,"欢迎！连接手机后请先点击筛选输入条件！")
 
         # 初始化线程和工作对象
         self.thread = None
         self.wk = None
+
+
 
 
     def start_update(self):

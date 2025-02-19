@@ -26,7 +26,7 @@ class ChatBox(QWidget):
 
         message_label = QLabel()
         message_label.setWordWrap(False)
-        font = QFont("Arial", 12)
+        font = QFont("Microsoft YaHei UI", 12)
         message_label.setFont(font)
         message_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
 

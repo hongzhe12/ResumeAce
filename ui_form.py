@@ -26,32 +26,13 @@ class Ui_Form(object):
         Form.resize(498, 750)
         Form.setStyleSheet(u"/* \u4e3b\u7a97\u53e3\u6837\u5f0f */\n"
 "QWidget {\n"
-"    background-color: #F0F0F0; /* \u4e3b\u7a97\u53e3\u80cc\u666f\u989c\u8272 */\n"
+"    background-color: white; /* \u4e3b\u7a97\u53e3\u80cc\u666f\u989c\u8272 */\n"
 "    color: #333333; /* \u4e3b\u7a97\u53e3\u6587\u5b57\u989c\u8272 */\n"
-"}\n"
-"\n"
-"/* \u6309\u94ae\u6837\u5f0f */\n"
-"QPushButton {\n"
-"    background-color: #1296db; /* \u6309\u94ae\u80cc\u666f\u989c\u8272 */\n"
-"    color: white; /* \u6309\u94ae\u6587\u5b57\u989c\u8272 */\n"
-"    border: none; /* \u53bb\u9664\u8fb9\u6846 */\n"
-"    border-radius: 5px; /* \u6309\u94ae\u5706\u89d2 */\n"
-"    padding: 8px 10px; /* \u6309\u94ae\u5185\u8fb9\u8ddd */\n"
-"    min-width: 80px; /* \u6309\u94ae\u6700\u5c0f\u5bbd\u5ea6 */\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #0d7ab4; /* \u9f20\u6807\u60ac\u505c\u65f6\u6309\u94ae\u80cc\u666f\u989c\u8272 */\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: #0a608e; /* \u6309\u94ae\u6309\u4e0b\u65f6\u80cc\u666f\u989c\u8272 */\n"
 "}\n"
 "\n"
 "/* \u6807\u7b7e\u6837\u5f0f */\n"
 "QLabel {\n"
-"    font-size: 14px; /* \u6807"
-                        "\u7b7e\u6587\u5b57\u5927\u5c0f */\n"
+"    font-size: 14px; /* \u6807\u7b7e\u6587\u5b57\u5927\u5c0f */\n"
 "    padding: 5px; /* \u6807\u7b7e\u5185\u8fb9\u8ddd */\n"
 "}\n"
 "\n"
@@ -69,14 +50,14 @@ class Ui_Form(object):
 "}\n"
 "\n"
 "/* \u6eda\u52a8\u6761\u6837\u5f0f */\n"
-"QScrollBar:vertical {\n"
+""
+                        "QScrollBar:vertical {\n"
 "    background: #F0F0F0; /* \u5782\u76f4\u6eda\u52a8\u6761\u80cc\u666f\u989c\u8272 */\n"
 "    width: 12px; /* \u5782\u76f4\u6eda\u52a8\u6761\u5bbd\u5ea6 */\n"
 "    margin: 12px 0 12px 0; /* \u5782\u76f4\u6eda\u52a8\u6761\u5916\u8fb9\u8ddd */\n"
 "}\n"
 "\n"
-"QScrollBar::ha"
-                        "ndle:vertical {\n"
+"QScrollBar::handle:vertical {\n"
 "    background: #B0B0B0; /* \u5782\u76f4\u6eda\u52a8\u6761\u6ed1\u5757\u80cc\u666f\u989c\u8272 */\n"
 "    min-height: 20px; /* \u5782\u76f4\u6eda\u52a8\u6761\u6ed1\u5757\u6700\u5c0f\u9ad8\u5ea6 */\n"
 "    border-radius: 6px; /* \u5782\u76f4\u6eda\u52a8\u6761\u6ed1\u5757\u5706\u89d2 */\n"
@@ -95,7 +76,8 @@ class Ui_Form(object):
 "}\n"
 "\n"
 "QScrollBar::sub-line:vertical {\n"
-"    border: none;\n"
+""
+                        "    border: none;\n"
 "    background: none;\n"
 "    height: 12px;\n"
 "    subcontrol-position: top;\n"
@@ -104,8 +86,7 @@ class Ui_Form(object):
 "\n"
 "QScrollBar:horizontal {\n"
 "    background: #F0F0F0; /* \u6c34\u5e73\u6eda\u52a8\u6761\u80cc\u666f\u989c\u8272 */\n"
-"    height: 12px; /* \u6c34\u5e73"
-                        "\u6eda\u52a8\u6761\u9ad8\u5ea6 */\n"
+"    height: 12px; /* \u6c34\u5e73\u6eda\u52a8\u6761\u9ad8\u5ea6 */\n"
 "    margin: 0 12px 0 12px; /* \u6c34\u5e73\u6eda\u52a8\u6761\u5916\u8fb9\u8ddd */\n"
 "}\n"
 "\n"
@@ -121,7 +102,8 @@ class Ui_Form(object):
 "\n"
 "QScrollBar::add-line:horizontal {\n"
 "    border: none;\n"
-"    background: none;\n"
+"    back"
+                        "ground: none;\n"
 "    width: 12px;\n"
 "    subcontrol-position: right;\n"
 "    subcontrol-origin: margin;\n"
@@ -185,7 +167,7 @@ class Ui_Form(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.connect_button = QPushButton(Form)
         self.connect_button.setObjectName(u"connect_button")
-        self.connect_button.setMinimumSize(QSize(90, 0))
+        self.connect_button.setMinimumSize(QSize(0, 0))
         font1 = QFont()
         font1.setPointSize(10)
         self.connect_button.setFont(font1)
@@ -213,7 +195,7 @@ class Ui_Form(object):
 
         self.add_task_button = QPushButton(Form)
         self.add_task_button.setObjectName(u"add_task_button")
-        self.add_task_button.setMinimumSize(QSize(90, 0))
+        self.add_task_button.setMinimumSize(QSize(0, 0))
         self.add_task_button.setFont(font1)
         self.add_task_button.setStyleSheet(u"QPushButton {\n"
 "    background-color: transparent;\n"
@@ -239,7 +221,7 @@ class Ui_Form(object):
 
         self.start_button = QPushButton(Form)
         self.start_button.setObjectName(u"start_button")
-        self.start_button.setMinimumSize(QSize(90, 0))
+        self.start_button.setMinimumSize(QSize(0, 0))
         self.start_button.setFont(font1)
         self.start_button.setStyleSheet(u"QPushButton {\n"
 "    background-color: transparent;\n"
@@ -265,7 +247,7 @@ class Ui_Form(object):
 
         self.stop_button = QPushButton(Form)
         self.stop_button.setObjectName(u"stop_button")
-        self.stop_button.setMinimumSize(QSize(90, 0))
+        self.stop_button.setMinimumSize(QSize(0, 0))
         self.stop_button.setFont(font1)
         self.stop_button.setStyleSheet(u"QPushButton {\n"
 "    background-color: transparent;\n"

@@ -4,7 +4,7 @@ from PySide6.QtGui import QIcon
 import resources_rc
 
 class DrawerMenu(QFrame):
-    def __init__(self, parent, width=200, button_icon_path=":/icons/images/菜单.png"):
+    def __init__(self, parent, width=200, button_icon_path=":/icons/images/菜单.svg"):
         super().__init__(parent)
         self.parent = parent
         self.width = width
@@ -81,7 +81,7 @@ class DrawerMenu(QFrame):
         self.animation.start()
 
     def update_button_position(self):
-        button_x = self.parent.width() - 50 - 25
+        button_x = self.parent.width() - 50
         self.toggle_button.setGeometry(button_x-32-5, 0 + 10, 50, 50)
 
     # def update_button_position(self):

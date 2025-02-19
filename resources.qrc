@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file>images/菜单.svg</file>
+    <file>images/筛选.svg</file>
+    <file>images/开始.svg</file>
+    <file>images/连接.svg</file>
+    <file>images/停止.svg</file>
+    <file>images/错误.svg</file>
+    <file>images/正常.svg</file>
+  </qresource>
+</RCC>

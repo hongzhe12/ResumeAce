@@ -2,6 +2,7 @@
 __author__ = "hongzhe"
 
 import logging
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -11,14 +12,17 @@ from PySide6.QtCore import QThread, Signal, QUrl, QSize, QTimer
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QDesktopServices, QClipboard
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QPushButton, QDialog, QVBoxLayout, QLineEdit, QHBoxLayout
+from PySide6.QtWidgets import QApplication, QPushButton, QDialog, QVBoxLayout, QLineEdit, QHBoxLayout, QWidget, \
+    QTextEdit
 from PySide6.QtWidgets import QMainWindow, QMessageBox
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 from poco.proxy import UIObjectProxy
 
+from chat_box import ChatBox
 from drawermenu import DrawerMenu
-from ui_main_window import Ui_MainWindow
+from ui_form import Ui_Form
+
 
 # 配置日志输出到文件
 log_file = "task_log.txt"
@@ -65,7 +69,20 @@ def is_scrcpy_running():
     return False
 
 def is_range_within(range1, range2):
-    range1 = range1.replace("元","")
+    # range1 岗位薪资
+    # range2 筛选薪资
+
+    raw_range1 = range1 # 复制一份，后续做判断
+
+    res1 = re.search('\d+\-\d+',range1)
+    if res1:
+        range1 = res1.group(0)
+
+
+    if "K" in raw_range1 or 'k' in raw_range1:
+        temp = [f'{int(range1.split("-")[0]) * 1000}', f'{int(range1.split("-")[1]) * 1000}']
+        range1 = "-".join(temp)
+
 
     # 解析第一个范围
     try:
@@ -234,6 +251,42 @@ def task_job(job_key: List[str],job_key_2:str):
         raise Exception("找不到控件，任务失败")
 
 
+class LogDisplayWindow(QWidget):
+    def __init__(self, log_content):
+        super().__init__()
+        self.setWindowTitle("日志显示窗口")
+        self.setGeometry(200, 200, 600, 400)
+
+        layout = QVBoxLayout()
+
+        # 创建一个 QTextEdit 用于显示日志内容
+        self.log_text_edit = QTextEdit()
+        self.log_text_edit.setReadOnly(True)
+        self.log_text_edit.setPlainText(log_content)
+        layout.addWidget(self.log_text_edit)
+
+        # 创建一个关闭按钮
+        close_button = QPushButton("关闭")
+        close_button.clicked.connect(self.close)
+        layout.addWidget(close_button, alignment=Qt.AlignRight)
+
+        self.setLayout(layout)
+
+        # 将窗口移动到屏幕中间
+        self.move_to_center()
+
+    def move_to_center(self):
+        # 获取屏幕的几何信息
+        screen_geometry = QApplication.primaryScreen().geometry()
+        # 获取窗口的几何信息
+        window_geometry = self.frameGeometry()
+        # 计算窗口居中时左上角的坐标
+        center_point = screen_geometry.center()
+        window_geometry.moveCenter(center_point)
+        # 移动窗口到计算好的位置
+        self.move(window_geometry.topLeft())
+
+
 class TaskWorker(QThread):
     """后台任务线程类，用于处理任务队列"""
     task_completed = Signal(str)  # 任务完成信号
@@ -260,13 +313,18 @@ class TaskWorker(QThread):
             self.progress_updated.emit((i + 1) * 100 // self.num_tasks)
 
 
-class MainWindow(QMainWindow):
+class MyWidget(QWidget):
     def __init__(self):
         super().__init__()
 
         # 创建 UI 类的实例
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_Form()
+
         self.ui.setupUi(self)  # 设置 UI 布局
+
+        self.log_window = None
+
+
 
         # 创建菜单
         # 菜单按钮
@@ -286,27 +344,7 @@ class MainWindow(QMainWindow):
         self.show_path.setMinimumSize(QSize(0, 40))
         self.show_path.setText("获取更新路径")
 
-        btn_style = '''QPushButton {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid white;
-    padding: 10px 20px;
-    font-size: 12px;
-    font-weight:bold;
-    border-radius: 5px;
 
-}
-
-QPushButton:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-}
-
-QPushButton:pressed {
-    background-color: rgba(255, 255, 255, 0.6);
-}'''
-
-        # self.open_log_button.setStyleSheet(btn_style)
-        # self.add_group.setStyleSheet(btn_style)
 
         # 创建抽屉式菜单
         self.drawer_menu = DrawerMenu(self)
@@ -343,6 +381,17 @@ QPushButton:pressed {
         # 设置定时器每 3 秒触发一次
         self.timer.timeout.connect(self.on_timeout)
         self.timer.start(2000)
+
+        # 获取布局对象
+        layout = self.ui.gridLayout
+        self.cb = ChatBox()
+        # 将 ChatBox 实例添加到布局的第一行第一列，占据一行一列
+        layout.addWidget(self.cb, 0, 0, 1, 1)
+        # 调整层级关系，将 ChatBox 放在 other_widget 后面
+        self.cb.stackUnder(self.drawer_menu)
+
+
+
 
 
     def start_update(self):
@@ -405,18 +454,29 @@ QPushButton:pressed {
         """停止后台任务"""
         if hasattr(self, 'worker') and self.worker.isRunning():
             self.worker.terminate()  # 停止任务线程
-            self.ui.log_output.append("任务已停止")
+            # self.ui.log_output.append("任务已停止")  # 待修改
+            self.cb.send_message(False,"任务已停止")
+
         else:
-            self.ui.log_output.append("没有正在运行的任务")
+            # self.ui.log_output.append("没有正在运行的任务") # 待修改
+            self.cb.send_message(False, "没有正在运行的任务")
 
     def open_log_file(self):
         """打开日志文件"""
         try:
             with open(log_file, 'r', encoding='utf-8') as file:
                 log_content = file.read()
-            self.ui.log_output.setPlainText(log_content)
+            # self.ui.log_output.setPlainText(log_content) # 待修改
+
+            # 创建并显示日志显示窗口
+            self.log_window = LogDisplayWindow(log_content)
+            self.log_window.show()
+
         except Exception as e:
-            self.ui.log_output.append(f"无法打开日志文件: {e}")
+            # self.ui.log_output.append(f"无法打开日志文件: {e}") # 待修改
+            error_message = f"无法打开日志文件: {e}"
+            self.log_window = LogDisplayWindow(error_message)
+            self.log_window.show()
 
     def add_task(self):
         """向队列添加任务"""
@@ -432,7 +492,8 @@ QPushButton:pressed {
         for _ in range(num_tasks):
             add_task(lambda: task_job(job_key,job_key_2))
 
-        self.ui.log_output.append(f"已添加 {num_tasks} 个任务，标题: {job_key}，薪水：{job_key_2}")
+        # self.ui.log_output.append(f"已添加 {num_tasks} 个任务，标题: {job_key}，薪水：{job_key_2}") # 待修改
+        self.cb.send_message(False, f"已添加 {num_tasks} 个任务，标题: {'、'.join(job_key)}，薪水：{job_key_2}")
 
     def start_tasks(self):
         """启动后台任务线程"""
@@ -444,15 +505,18 @@ QPushButton:pressed {
         self.worker.progress_updated.connect(self.update_progress)
 
         self.worker.start()
-        self.ui.statusbar.showMessage("等待大约30秒，正在初始化...", 5000)
+        # self.ui.statusbar.showMessage("等待大约30秒，正在初始化...", 5000)
+        self.cb.send_message(True, f"任务开始启动，请等待大约30秒，正在初始化...")
 
     def on_task_completed(self, message):
         """任务完成时的处理"""
-        self.ui.log_output.append(f"任务完成: {message}")
+        # self.ui.log_output.append(f"任务完成: {message}") # 待修改
+        self.cb.send_message(False, f"任务完成: {message}")
 
     def on_task_failed(self, message):
         """任务失败时的处理"""
-        self.ui.log_output.append(f"任务失败: {message}")
+        # self.ui.log_output.append(f"任务失败: {message}") # 待修改
+        self.cb.send_message(False, f"任务失败: {message}")
 
     def update_progress(self, progress):
         """更新进度条"""
@@ -490,7 +554,7 @@ if __name__ == "__main__":
     # 调试：C:\Users\hongz\Downloads\简历助手\python-embed\python.exe C:\Users\hongz\Downloads\简历助手\src\main.py
     app = QApplication(sys.argv)
     if show_disclaimer():
-        window = MainWindow()
+        window = MyWidget()
         window.show()
         sys.exit(app.exec())
     else:

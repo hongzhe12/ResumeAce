@@ -81,6 +81,18 @@ class DrawerMenu(QFrame):
         button_x = self.parent.width() - 50 - 25
         self.toggle_button.setGeometry(button_x, 0 + 10, 50, 50)
 
+    # def update_button_position(self):
+    #     parent_width = self.parent.width()
+    #     parent_height = self.parent.height()
+    #     button_width = 50
+    #     button_height = 50
+    #     margin = 10  # 距离父窗口边缘的间距
+    #
+    #     button_x = parent_width - button_width - margin
+    #     button_y = parent_height - button_height - margin
+    #
+    #     self.toggle_button.setGeometry(button_x, button_y, button_width, button_height)
+
     def on_parent_resize(self, event):
         self.update_button_position()
         self.setGeometry(-self.width, 0, self.width, self.parent.height())

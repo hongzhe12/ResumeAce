@@ -260,7 +260,7 @@ class Ui_Form(object):
     # setupUi
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"\u7b80\u5386\u52a9\u624bv1.5.2", None))
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"\u7b80\u5386\u52a9\u624bv1.6", None))
         self.label_2.setText("")
         self.connect_button.setText("")
         self.add_task_button.setText("")

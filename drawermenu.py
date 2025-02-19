@@ -27,7 +27,6 @@ class DrawerMenu(QFrame):
         self.toggle_button = QPushButton("", self.parent)
         self.update_button_position()
 
-
         self.toggle_button.setStyleSheet("""
             QPushButton {
                 border: none;  /* 去掉边框 */
@@ -49,7 +48,7 @@ class DrawerMenu(QFrame):
         # 创建动画效果
         self.animation = QPropertyAnimation(self, b"geometry")
         self.animation.setDuration(300)
-        self.animation.setEasingCurve(QEasingCurve.InOutQuad)
+        self.animation.setEasingCurve(QEasingCurve.OutCubic)  # 使用更平滑的动画曲线
 
     def add_widget(self, widget):
         """向侧边栏添加控件"""
@@ -82,21 +81,12 @@ class DrawerMenu(QFrame):
 
     def update_button_position(self):
         button_x = self.parent.width() - 50
-        self.toggle_button.setGeometry(button_x-32-5, 0 + 10, 50, 50)
-
-    # def update_button_position(self):
-    #     parent_width = self.parent.width()
-    #     parent_height = self.parent.height()
-    #     button_width = 50
-    #     button_height = 50
-    #     margin = 10  # 距离父窗口边缘的间距
-    #
-    #     button_x = parent_width - button_width - margin
-    #     button_y = parent_height - button_height - margin
-    #
-    #     self.toggle_button.setGeometry(button_x, button_y, button_width, button_height)
+        self.toggle_button.setGeometry(button_x - 32 - 5, 10, 50, 50)
 
     def on_parent_resize(self, event):
         self.update_button_position()
-        self.setGeometry(-self.width, 0, self.width, self.parent.height())
+        if self.is_expanded:
+            self.setGeometry(0, 0, self.width, self.parent.height())
+        else:
+            self.setGeometry(-self.width, 0, self.width, self.parent.height())
         event.accept()

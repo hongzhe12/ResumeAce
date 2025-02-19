@@ -49,7 +49,7 @@ task_queue = []
 ADB_PATH = "adb"  # 开发环境
 
 
-ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
+# ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
 
 from PySide6.QtCore import QObject, Signal
@@ -328,6 +328,7 @@ class MyWidget(QWidget):
         super().__init__()
 
         # 创建 UI 类的实例
+        self.num_tasks = None
         self.ui = Ui_Form()
 
         self.ui.setupUi(self)  # 设置 UI 布局
@@ -563,7 +564,7 @@ QPushButton:pressed {
         # 自定义数据结构，用于描述表单字段
         form_structure = [
             {"label": "筛选标题(多个关键词空格隔开)", "type": "text"},
-            {"label": "筛选薪水(例如5000-10000)", "type": "text","default": "5000-1000"},
+            {"label": "筛选薪水(例如5000-10000)", "type": "text","default": "5000-10000"},
             {"label": "任务数量", "type": "spinbox","default": 100},
         ]
         dialog = InputFormDialog(form_structure, self)
@@ -574,7 +575,7 @@ QPushButton:pressed {
             # 薪水
             filter_text_2 = values[1]
             # 任务数量
-            num_tasks = values[2]
+            self.num_tasks = values[2]
 
             job_key = filter_text.split(" ") if filter_text else []
             job_key_2 = filter_text_2 if filter_text_2 else None
@@ -585,15 +586,16 @@ QPushButton:pressed {
 
 
         task_queue.clear()
-        for _ in range(num_tasks):
+        for _ in range(self.num_tasks):
             add_task(lambda: task_job(job_key,job_key_2))
 
         # self.ui.log_output.append(f"已添加 {num_tasks} 个任务，标题: {job_key}，薪水：{job_key_2}") # 待修改
-        self.cb.send_message(False, f"已添加 {num_tasks} 个任务，标题: {'、'.join(job_key)}，薪水：{job_key_2}")
+        self.cb.send_message(False, f"已添加 {self.num_tasks} 个任务，标题: {'、'.join(job_key)}，薪水：{job_key_2}")
+        
 
     def start_tasks(self):
         """启动后台任务线程"""
-        num_tasks = self.ui.num_tasks_input.value()
+        num_tasks = self.num_tasks
 
         self.worker = TaskWorker(num_tasks)
         self.worker.task_completed.connect(self.on_task_completed)

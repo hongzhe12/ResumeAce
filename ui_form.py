@@ -142,35 +142,14 @@ class Ui_Form(object):
 
         self.gridLayout.addWidget(self.progress_bar, 1, 0, 1, 1)
 
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.num_tasks_label_2 = QLabel(Form)
-        self.num_tasks_label_2.setObjectName(u"num_tasks_label_2")
-        font = QFont()
-        self.num_tasks_label_2.setFont(font)
-
-        self.horizontalLayout_2.addWidget(self.num_tasks_label_2)
-
-        self.label = QLabel(Form)
-        self.label.setObjectName(u"label")
-        self.label.setMinimumSize(QSize(32, 32))
-        self.label.setPixmap(QPixmap(u":/icons/images/\u9519\u8bef.svg"))
-        self.label.setScaledContents(True)
-        self.label.setWordWrap(False)
-
-        self.horizontalLayout_2.addWidget(self.label)
-
-
-        self.gridLayout.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
-
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.connect_button = QPushButton(Form)
         self.connect_button.setObjectName(u"connect_button")
         self.connect_button.setMinimumSize(QSize(0, 0))
-        font1 = QFont()
-        font1.setPointSize(10)
-        self.connect_button.setFont(font1)
+        font = QFont()
+        font.setPointSize(10)
+        self.connect_button.setFont(font)
         self.connect_button.setStyleSheet(u"QPushButton {\n"
 "    background-color: transparent;\n"
 "    border: none;\n"
@@ -196,7 +175,7 @@ class Ui_Form(object):
         self.add_task_button = QPushButton(Form)
         self.add_task_button.setObjectName(u"add_task_button")
         self.add_task_button.setMinimumSize(QSize(0, 0))
-        self.add_task_button.setFont(font1)
+        self.add_task_button.setFont(font)
         self.add_task_button.setStyleSheet(u"QPushButton {\n"
 "    background-color: transparent;\n"
 "    border: none;\n"
@@ -222,7 +201,7 @@ class Ui_Form(object):
         self.start_button = QPushButton(Form)
         self.start_button.setObjectName(u"start_button")
         self.start_button.setMinimumSize(QSize(0, 0))
-        self.start_button.setFont(font1)
+        self.start_button.setFont(font)
         self.start_button.setStyleSheet(u"QPushButton {\n"
 "    background-color: transparent;\n"
 "    border: none;\n"
@@ -248,7 +227,7 @@ class Ui_Form(object):
         self.stop_button = QPushButton(Form)
         self.stop_button.setObjectName(u"stop_button")
         self.stop_button.setMinimumSize(QSize(0, 0))
-        self.stop_button.setFont(font1)
+        self.stop_button.setFont(font)
         self.stop_button.setStyleSheet(u"QPushButton {\n"
 "    background-color: transparent;\n"
 "    border: none;\n"
@@ -272,7 +251,7 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.stop_button)
 
 
-        self.gridLayout.addLayout(self.horizontalLayout, 3, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout, 2, 0, 1, 1)
 
 
         self.retranslateUi(Form)
@@ -283,8 +262,6 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"\u7b80\u5386\u52a9\u624bv1.5.2", None))
         self.label_2.setText("")
-        self.num_tasks_label_2.setText(QCoreApplication.translate("Form", u"\u8fde\u63a5\u72b6\u6001\uff1a", None))
-        self.label.setText("")
         self.connect_button.setText("")
         self.add_task_button.setText("")
         self.start_button.setText("")

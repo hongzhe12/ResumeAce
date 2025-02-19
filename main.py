@@ -49,7 +49,7 @@ task_queue = []
 ADB_PATH = "adb"  # 开发环境
 
 
-# ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
+ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
 
 from PySide6.QtCore import QObject, Signal
@@ -404,11 +404,11 @@ QPushButton:pressed {
 
         # 加载连接状态
         # 加载图像
-        pixmap = QPixmap(":/icons/images/错误.png")
-        pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
-        self.ui.label.setPixmap(pixmap)
-        self.ui.label.setFixedSize(16, 16)
-        self.ui.label.setAlignment(Qt.AlignCenter)
+        # pixmap = QPixmap(":/icons/images/错误.png")
+        # pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
+        # self.ui.label.setPixmap(pixmap)
+        # self.ui.label.setFixedSize(16, 16)
+        # self.ui.label.setAlignment(Qt.AlignCenter)
 
         # 创建一个 QTimer 对象
         self.timer = QTimer(self)
@@ -479,11 +479,11 @@ QPushButton:pressed {
         # 每次定时器触发时更新标签内容
         if check_android_connection():
             # 加载图像
-            pixmap = QPixmap(":/icons/images/正常.png")
-            pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
-            self.ui.label.setPixmap(pixmap)
-            self.ui.label.setFixedSize(16, 16)
-            self.ui.label.setAlignment(Qt.AlignCenter)
+            # pixmap = QPixmap(":/icons/images/正常.png")
+            # pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
+            # self.ui.label.setPixmap(pixmap)
+            # self.ui.label.setFixedSize(16, 16)
+            # self.ui.label.setAlignment(Qt.AlignCenter)
 
             # 检查线程是否存在且正在运行
             if self.thread and self.thread.isRunning():
@@ -508,11 +508,11 @@ QPushButton:pressed {
             # 加载图像
             pixmap = QPixmap(":/icons/images/err.png")
             pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
-            self.ui.label.setPixmap(pixmap)
-            self.ui.label.setFixedSize(16, 16)
-            self.ui.label.setAlignment(Qt.AlignCenter)
+            # self.ui.label.setPixmap(pixmap)
+            # self.ui.label.setFixedSize(16, 16)
+            # self.ui.label.setAlignment(Qt.AlignCenter)
 
-        self.ui.label.update()  # 或使用 repaint()
+        # self.ui.label.update()  # 或使用 repaint()
 
     def check_connection(self):
         """检查Android设备连接状态"""

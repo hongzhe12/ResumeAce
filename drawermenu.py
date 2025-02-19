@@ -26,11 +26,14 @@ class DrawerMenu(QFrame):
         # 创建一个按钮，用于切换侧边栏
         self.toggle_button = QPushButton("", self.parent)
         self.update_button_position()
+
+
         self.toggle_button.setStyleSheet("""
             QPushButton {
                 border: none;  /* 去掉边框 */
                 background: transparent;  /* 背景透明 */
                 background-position: center;  /* 图标居中显示 */
+                padding: 0px 0px; /* 按钮内边距 */
             }
             QPushButton:hover {
                 background-color: #E0E0E0;  /* 鼠标悬停时背景颜色 */
@@ -79,7 +82,7 @@ class DrawerMenu(QFrame):
 
     def update_button_position(self):
         button_x = self.parent.width() - 50 - 25
-        self.toggle_button.setGeometry(button_x, 0 + 10, 50, 50)
+        self.toggle_button.setGeometry(button_x-32-5, 0 + 10, 50, 50)
 
     # def update_button_position(self):
     #     parent_width = self.parent.width()

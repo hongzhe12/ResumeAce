@@ -8,21 +8,21 @@ import sys
 from datetime import datetime
 from typing import List, Union, Any
 
-from PySide6.QtCore import QThread, Signal, QUrl, QSize, QTimer
+from PySide6.QtCore import QThread, QUrl, QSize, QTimer
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QDesktopServices, QClipboard
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QPushButton, QDialog, QVBoxLayout, QLineEdit, QHBoxLayout, QWidget, \
-    QTextEdit
-from PySide6.QtWidgets import QMainWindow, QMessageBox
+from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget, \
+    QTextEdit, QDialog
+from PySide6.QtWidgets import QMessageBox
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 from poco.proxy import UIObjectProxy
 
 from chat_box import ChatBox
 from drawermenu import DrawerMenu
+from inputformdialog import InputFormDialog
 from ui_form import Ui_Form
-
 
 # 配置日志输出到文件
 log_file = "task_log.txt"
@@ -54,6 +54,19 @@ ADB_PATH = "adb"  # 开发环境
 
 from PySide6.QtCore import QObject, Signal
 
+class ExcThread(QObject):
+    # 定义信号
+    is_finish = Signal(bool)
+
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        if not is_scrcpy_running():
+            # 使用 subprocess.Popen 非阻塞地启动 scrcpy.exe
+            subprocess.Popen([os.path.join("scrcpy-win64-v3.1", "scrcpy.exe")],
+                             creationflags=subprocess.CREATE_NO_WINDOW)
+            self.is_finish.emit(True)
 
 import psutil
 
@@ -114,10 +127,7 @@ def check_android_connection() -> bool:
         # 解析输出，判断是否有设备连接
         lines = output.strip().split('\n')[1:]  # 去掉第一行标题
 
-        if not is_scrcpy_running():
-            # 使用 subprocess.Popen 非阻塞地启动 scrcpy.exe
-            subprocess.Popen([os.path.join("scrcpy-win64-v3.1", "scrcpy.exe")],
-                             creationflags=subprocess.CREATE_NO_WINDOW)
+
 
         return any(line.strip() and 'device' in line for line in lines)
     except Exception as e:
@@ -332,6 +342,7 @@ class MyWidget(QWidget):
         self.open_log_button.setMinimumSize(QSize(0, 40))
         self.open_log_button.setText("查看日志")
 
+
         self.add_group = QPushButton()
         self.add_group.setMinimumSize(QSize(0, 40))
         self.add_group.setText("加群交流")
@@ -344,10 +355,33 @@ class MyWidget(QWidget):
         self.show_path.setMinimumSize(QSize(0, 40))
         self.show_path.setText("获取更新路径")
 
+        btn_style = '''/* 按钮样式 */
+QPushButton {
+    background-color: #1296db; /* 按钮背景颜色 */
+    color: white; /* 按钮文字颜色 */
+    border: none; /* 去除边框 */
+    border-radius: 5px; /* 按钮圆角 */
+    padding: 8px 10px; /* 按钮内边距 */
+    min-width: 80px; /* 按钮最小宽度 */
+}
+
+QPushButton:hover {
+    background-color: #0d7ab4; /* 鼠标悬停时按钮背景颜色 */
+}
+
+QPushButton:pressed {
+    background-color: #0a608e; /* 按钮按下时背景颜色 */
+}'''
+
+        self.open_log_button.setStyleSheet(btn_style)
+        self.add_group.setStyleSheet(btn_style)
+        self.open_csv.setStyleSheet(btn_style)
+        self.show_path.setStyleSheet(btn_style)
 
 
         # 创建抽屉式菜单
         self.drawer_menu = DrawerMenu(self)
+
 
         # 向侧边栏添加按钮
 
@@ -370,7 +404,7 @@ class MyWidget(QWidget):
 
         # 加载连接状态
         # 加载图像
-        pixmap = QPixmap(":/icons/images/err.png")
+        pixmap = QPixmap(":/icons/images/错误.png")
         pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
         self.ui.label.setPixmap(pixmap)
         self.ui.label.setFixedSize(16, 16)
@@ -390,8 +424,9 @@ class MyWidget(QWidget):
         # 调整层级关系，将 ChatBox 放在 other_widget 后面
         self.cb.stackUnder(self.drawer_menu)
 
-
-
+        # 初始化线程和工作对象
+        self.thread = None
+        self.wk = None
 
 
     def start_update(self):
@@ -410,24 +445,59 @@ class MyWidget(QWidget):
         os.startfile(file_path)
 
     def connect_phone(self):
-        # 获取用户输入的IP
-        ipaddress = self.ui.ip.text()
-        result = subprocess.run(
-            [ADB_PATH, 'connect', ipaddress],
-            capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
-        )
-        print([ADB_PATH, 'connect', ipaddress])
-        self.ui.statusbar.showMessage(result.stdout)
+        # 自定义数据结构，用于描述表单字段
+        form_structure = [
+            {"label": "IP地址和端口", "type": "text"},
+        ]
+        dialog = InputFormDialog(form_structure, self)
+        if dialog.exec() == QDialog.Accepted:
+            values = dialog.get_input_values()
+            print("输入的值:", values)
+
+            # 获取用户输入的IP
+            ipaddress = values[0]
+
+            result = subprocess.run(
+                [ADB_PATH, 'connect', ipaddress],
+                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            print([ADB_PATH, 'connect', ipaddress])
+            self.ui.statusbar.showMessage(result.stdout)
+
+
+
 
     def on_timeout(self):
+
+
         # 每次定时器触发时更新标签内容
         if check_android_connection():
             # 加载图像
-            pixmap = QPixmap(":/icons/images/success.png")
+            pixmap = QPixmap(":/icons/images/正常.png")
             pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
             self.ui.label.setPixmap(pixmap)
             self.ui.label.setFixedSize(16, 16)
             self.ui.label.setAlignment(Qt.AlignCenter)
+
+            # 检查线程是否存在且正在运行
+            if self.thread and self.thread.isRunning():
+                print("Thread is already running.")
+                return
+
+            # 创建工作线程和工作对象
+            self.wk = ExcThread()
+            self.thread = QThread()
+
+            # 将工作对象移动到线程中
+            self.wk.moveToThread(self.thread)
+
+            # 连接信号和槽
+            self.thread.started.connect(self.wk.run)
+            self.wk.is_finish.connect(lambda res: print("打开成功") if res else print("打开失败"))
+
+            # 启动线程
+            self.thread.start()
+
         else:
             # 加载图像
             pixmap = QPixmap(":/icons/images/err.png")
@@ -480,15 +550,35 @@ class MyWidget(QWidget):
 
     def add_task(self):
         """向队列添加任务"""
-        filter_text = self.ui.filter_input.text()
-        filter_text_2 = self.ui.filter_input_2.text()
-        job_key = filter_text.split(" ") if filter_text else []
+        # filter_text = self.ui.filter_input.text()
+        # filter_text_2 = self.ui.filter_input_2.text()
+        # num_tasks = self.ui.num_tasks_input.value()
 
-        job_key_2 = filter_text_2 if filter_text_2 else None
+        # 自定义数据结构，用于描述表单字段
+        form_structure = [
+            {"label": "筛选标题(多个关键词空格隔开)", "type": "text"},
+            {"label": "筛选薪水(例如5000-10000)", "type": "text","default": "5000-1000"},
+            {"label": "任务数量", "type": "spinbox","default": 100},
+        ]
+        dialog = InputFormDialog(form_structure, self)
+        if dialog.exec() == QDialog.Accepted:
+            values = dialog.get_input_values()
+            # 标题
+            filter_text = values[0]
+            # 薪水
+            filter_text_2 = values[1]
+            # 任务数量
+            num_tasks = values[2]
 
-        num_tasks = self.ui.num_tasks_input.value()
+            job_key = filter_text.split(" ") if filter_text else []
+            job_key_2 = filter_text_2 if filter_text_2 else None
+        else:
+            return
+
+
+
+
         task_queue.clear()
-
         for _ in range(num_tasks):
             add_task(lambda: task_job(job_key,job_key_2))
 

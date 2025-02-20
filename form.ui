@@ -30,6 +30,7 @@
 QWidget {
     background-color: white; /* 主窗口背景颜色 */
     color: #333333; /* 主窗口文字颜色 */
+	border-radius: 10px; /* 文本框圆角 */
 }
 
 /* 标签样式 */
@@ -201,7 +202,78 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal
       </widget>
      </item>
      <item>
-      <widget class="QTextEdit" name="textEdit"/>
+      <widget class="QTextEdit" name="textEdit">
+       <property name="styleSheet">
+        <string notr="true">QTextEdit {
+    /* 整体背景颜色，采用浅灰色，营造柔和氛围 */
+    background-color: #F2F2F2;
+    /* 文字颜色为深灰色，保证可读性 */
+    color: #333333;
+    /* 边框样式，设置 1 像素宽的浅灰色边框，增加边界感 */
+    border: 1px solid #CCCCCC;
+    /* 边框圆角为 5 像素，使组件边角更圆润 */
+    border-radius: 5px;
+    /* 内边距设置，让文字与边框有一定间距 */
+    padding: 5px;
+    /* 字体大小设置为 14 像素 */
+    font-size: 14px;
+    /* 字体设置为微软雅黑，这是常见的简洁字体 */
+    font-family: &quot;Microsoft YaHei&quot;;
+}
+
+/* 鼠标悬停时的样式 */
+QTextEdit:hover {
+    /* 鼠标悬停时，边框颜色变为蓝色，提示用户可交互 */
+    border: 1px solid #0084FF;
+}
+
+/* 获得焦点时的样式 */
+QTextEdit:focus {
+    /* 获得焦点时，边框颜色变为蓝色，突出当前操作组件 */
+    border: 1px solid #0084FF;
+    /* 焦点状态下添加蓝色的阴影，增强视觉效果 */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 132, 255, 0.5);
+}
+
+/* 滚动条样式 */
+QTextEdit QScrollBar:vertical {
+    /* 垂直滚动条的宽度 */
+    width: 8px;
+    /* 滚动条背景颜色 */
+    background: #E5E5E5;
+    /* 滚动条边框样式 */
+    border: none;
+    margin: 0;
+}
+
+QTextEdit QScrollBar::handle:vertical {
+    /* 滚动条滑块的背景颜色 */
+    background: #B3B3B3;
+    /* 滑块的圆角 */
+    border-radius: 4px;
+}
+
+QTextEdit QScrollBar::handle:vertical:hover {
+    /* 鼠标悬停在滑块上时的背景颜色 */
+    background: #808080;
+}
+
+QTextEdit QScrollBar::add-line:vertical,
+QTextEdit QScrollBar::sub-line:vertical {
+    /* 滚动条上下箭头区域的高度 */
+    height: 0;
+    /* 隐藏上下箭头 */
+    subcontrol-opacity: 0;
+}
+
+QTextEdit QScrollBar::add-page:vertical,
+QTextEdit QScrollBar::sub-page:vertical {
+    /* 滚动条空白区域的背景颜色 */
+    background: none;
+}</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QProgressBar" name="progress_bar">

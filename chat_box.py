@@ -3,6 +3,7 @@ from pprint import pprint
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QHBoxLayout
 from PySide6.QtGui import QFont, QFontMetrics
 from PySide6.QtCore import Qt, QTimer
+
 from ui_chat_box import Ui_ChatBox
 
 
@@ -11,6 +12,7 @@ class ChatBox(QWidget):
         super().__init__()
         self.ui = Ui_ChatBox()
         self.ui.setupUi(self)
+
 
     def send_message(self, is_sender,message):
         if is_sender:

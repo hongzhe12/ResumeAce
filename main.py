@@ -1,6 +1,7 @@
 # -*- encoding=utf8 -*-
 __author__ = "hongzhe"
 
+import json
 import logging
 import re
 import subprocess
@@ -8,21 +9,25 @@ import sys
 from datetime import datetime
 from typing import List, Union, Any
 
-from PySide6.QtCore import QThread, QUrl, QSize, QTimer
+from PySide6.QtCore import QThread, QUrl, QSize, QTimer, QEvent, QPoint
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QDesktopServices, QClipboard
+from PySide6.QtGui import QDesktopServices, QClipboard, QIcon
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget, \
-    QTextEdit, QDialog
+    QTextEdit, QDialog, QHBoxLayout
 from PySide6.QtWidgets import QMessageBox
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 from poco.proxy import UIObjectProxy
+from sparkai.core.outputs import LLMResult
 
+from eltitlebar import ElTitleBar
+from elwindow import ElWindow
+from ui_form import Ui_Form
 from chat_box import ChatBox
 from drawermenu import DrawerMenu
 from inputformdialog import InputFormDialog
-from ui_form import Ui_Form
+from xinghuo import get_xinghuo_response
 
 # 配置日志输出到文件
 log_file = "task_log.txt"
@@ -43,16 +48,91 @@ logger.addHandler(file_handler)
 # 任务队列
 task_queue = []
 
-
-
-
 ADB_PATH = "adb"  # 开发环境
-
 
 # ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
+# 定义样式表
+QScrollBar_style_sheet = """
+        /* 滚动条样式 */
+        QScrollBar:vertical {
+            background: #F0F0F0; /* 垂直滚动条背景颜色 */
+            width: 12px; /* 垂直滚动条宽度 */
+            margin: 12px 0 12px 0; /* 垂直滚动条外边距 */
+            opacity: 0; /* 默认隐藏垂直滚动条 */
+            transition: opacity 0.2s ease; /* 添加过渡效果，使显示和隐藏更平滑 */
+        }
 
+        QScrollBar:vertical:hover {
+            opacity: 1; /* 鼠标悬停时显示垂直滚动条 */
+        }
+
+        QScrollBar::handle:vertical {
+            background: #B0B0B0; /* 垂直滚动条滑块背景颜色 */
+            min-height: 20px; /* 垂直滚动条滑块最小高度 */
+            border-radius: 6px; /* 垂直滚动条滑块圆角 */
+        }
+
+        QScrollBar::handle:vertical:hover {
+            background: #909090; /* 鼠标悬停时垂直滚动条滑块背景颜色 */
+        }
+
+        QScrollBar::add-line:vertical {
+            border: none;
+            background: none;
+            height: 12px;
+            subcontrol-position: bottom;
+            subcontrol-origin: margin;
+        }
+
+        QScrollBar::sub-line:vertical {
+            border: none;
+            background: none;
+            height: 12px;
+            subcontrol-position: top;
+            subcontrol-origin: margin;
+        }
+
+        QScrollBar:horizontal {
+            background: #F0F0F0; /* 水平滚动条背景颜色 */
+            height: 12px; /* 水平滚动条高度 */
+            margin: 0 12px 0 12px; /* 水平滚动条外边距 */
+            opacity: 0; /* 默认隐藏水平滚动条 */
+            transition: opacity 0.2s ease; /* 添加过渡效果，使显示和隐藏更平滑 */
+        }
+
+        QScrollBar:horizontal:hover {
+            opacity: 1; /* 鼠标悬停时显示水平滚动条 */
+        }
+
+        QScrollBar::handle:horizontal {
+            background: #B0B0B0; /* 水平滚动条滑块背景颜色 */
+            min-width: 20px; /* 水平滚动条滑块最小宽度 */
+            border-radius: 6px; /* 水平滚动条滑块圆角 */
+        }
+
+        QScrollBar::handle:horizontal:hover {
+            background: #909090; /* 鼠标悬停时水平滚动条滑块背景颜色 */
+        }
+
+        QScrollBar::add-line:horizontal {
+            border: none;
+            background: none;
+            width: 12px;
+            subcontrol-position: right;
+            subcontrol-origin: margin;
+        }
+
+        QScrollBar::sub-line:horizontal {
+            border: none;
+            background: none;
+            width: 12px;
+            subcontrol-position: left;
+            subcontrol-origin: margin;
+        }
+        """
 from PySide6.QtCore import QObject, Signal
+
 
 class ExcThread(QObject):
     # 定义信号
@@ -68,7 +148,35 @@ class ExcThread(QObject):
                              creationflags=subprocess.CREATE_NO_WINDOW)
             self.is_finish.emit(True)
 
+
+
+class ChatThread(QObject):
+    # 定义信号
+    result = Signal(str)
+
+    def __init__(self,message):
+        super().__init__()
+        self.message = message
+
+    def run(self):
+        # 调用星火大模型接口
+        res = get_xinghuo_response(self.message)
+
+        # 从结果中提取回复文本
+        if isinstance(res, LLMResult):
+            # 通常 generations 是一个二维列表，这里假设取第一个生成结果
+            first_generation = res.generations[0][0]
+            reply_text = first_generation.text
+            self.result.emit(reply_text)
+        else:
+            print("结果不是 LLMResult 类型")
+            self.result.emit("不好意思，正在学习中...")
+
+
+
+
 import psutil
+
 
 def is_scrcpy_running():
     # 遍历所有正在运行的进程
@@ -81,21 +189,20 @@ def is_scrcpy_running():
             pass
     return False
 
+
 def is_range_within(range1, range2):
     # range1 岗位薪资
     # range2 筛选薪资
 
-    raw_range1 = range1 # 复制一份，后续做判断
+    raw_range1 = range1  # 复制一份，后续做判断
 
-    res1 = re.search('\d+\-\d+',range1)
+    res1 = re.search('\d+\-\d+', range1)
     if res1:
         range1 = res1.group(0)
-
 
     if "K" in raw_range1 or 'k' in raw_range1:
         temp = [f'{int(range1.split("-")[0]) * 1000}', f'{int(range1.split("-")[1]) * 1000}']
         range1 = "-".join(temp)
-
 
     # 解析第一个范围
     try:
@@ -114,6 +221,7 @@ def is_range_within(range1, range2):
     # 判断第一个范围是否在第二个范围内
     return min2 <= min1 and max1 <= max2
 
+
 def check_android_connection() -> bool:
     """检查Android设备是否连接"""
     try:
@@ -126,8 +234,6 @@ def check_android_connection() -> bool:
 
         # 解析输出，判断是否有设备连接
         lines = output.strip().split('\n')[1:]  # 去掉第一行标题
-
-
 
         return any(line.strip() and 'device' in line for line in lines)
     except Exception as e:
@@ -182,7 +288,7 @@ def parse_page() -> Union[tuple[None, None, None], tuple[Union[str, Any], UIObje
 
     if btn_chat:
         job_name = tv_job_name.get_text() if tv_job_name else ''
-        return tv_description, btn_chat, job_name,job_salary,location,boss_name
+        return tv_description, btn_chat, job_name, job_salary, location, boss_name
 
     return None, None, None
 
@@ -191,11 +297,14 @@ def filter_job_title(job_name: str, job_key: List[str]) -> bool:
     """根据用户提供的筛选规则对职位标题进行筛选"""
     return any(key in job_name for key in job_key)
 
+
 def filter_job(content: str, job_key: List[str]) -> bool:
     """根据用户提供的筛选规则对职位标题进行筛选"""
     return any(key in content for key in job_key)
 
+
 import csv
+
 
 def append_to_csv(file_path, data: list, header=None) -> None:
     """
@@ -220,9 +329,10 @@ def append_to_csv(file_path, data: list, header=None) -> None:
     except Exception as e:
         print(f"写入 CSV 文件时出现错误: {e}")
 
-def task_job(job_key: List[str],job_key_2:str):
+
+def task_job(job_key: List[str], job_key_2: str):
     """任务：解析页面内容并执行聊天操作"""
-    content, btn_chat, job_name,job_salary,location,boss_name = parse_page()
+    content, btn_chat, job_name, job_salary, location, boss_name = parse_page()
 
     if content and btn_chat and job_name:
         logger.info(f"职位名称：: {job_name}")
@@ -233,7 +343,7 @@ def task_job(job_key: List[str],job_key_2:str):
 
     if content and job_name:
 
-        if filter_job_title(job_name, job_key) and is_range_within(job_salary,job_key_2):  # 筛选标题是否符合条件
+        if filter_job_title(job_name, job_key) and is_range_within(job_salary, job_key_2):  # 筛选标题是否符合条件
             logger.info(f"职位标题符合筛选条件: {job_name}")
             logger.info(f"解析到内容: {content}")
             btn_chat.click()  # 打招呼
@@ -243,13 +353,12 @@ def task_job(job_key: List[str],job_key_2:str):
             swipe_left()  # 向左滑动
             time.sleep(1.5)  # 等待页面加载
 
-
             # 获取当前日期
             current_date = datetime.now().strftime("%Y-%m-%d")
             # 生成文件名
             file_path = f"{current_date}已投名单.csv"
-            append_to_csv(file_path,[job_name,content,job_salary,location,boss_name],
-                          header=["岗位名称","工作内容","薪水","位置","招聘者姓名"])
+            append_to_csv(file_path, [job_name, content, job_salary, location, boss_name],
+                          header=["岗位名称", "工作内容", "薪水", "位置", "招聘者姓名"])
 
 
         else:
@@ -313,7 +422,6 @@ class TaskWorker(QThread):
         global poco
         poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
 
-
         # 执行队列中的任务
         for i in range(self.num_tasks):
             if execute_task(task_queue[i]):
@@ -323,26 +431,40 @@ class TaskWorker(QThread):
             self.progress_updated.emit((i + 1) * 100 // self.num_tasks)
 
 
-class MyWidget(QWidget):
+class EnterKeyFilter(QObject):
+    def __init__(self, target, callback):
+        super().__init__()
+        self.target = target
+        self.callback = callback
+
+    def eventFilter(self, obj, event):
+        if obj == self.target and event.type() == QEvent.KeyPress:
+            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+                # 触发回调函数
+                self.callback()
+                # 阻止事件继续传播
+                return True
+        # 其他事件正常处理
+        return super().eventFilter(obj, event)
+
+class MyWidget(ElWindow):
     def __init__(self):
         super().__init__()
 
         # 创建 UI 类的实例
+        self.chat = None
         self.num_tasks = None
+        self.is_chat_show = False
         self.ui = Ui_Form()
 
         self.ui.setupUi(self)  # 设置 UI 布局
 
-        self.log_window = None
-
 
 
         # 创建菜单
-        # 菜单按钮
         self.open_log_button = QPushButton()
         self.open_log_button.setMinimumSize(QSize(0, 40))
         self.open_log_button.setText("查看日志")
-
 
         self.add_group = QPushButton()
         self.add_group.setMinimumSize(QSize(0, 40))
@@ -379,10 +501,8 @@ QPushButton:pressed {
         self.open_csv.setStyleSheet(btn_style)
         self.show_path.setStyleSheet(btn_style)
 
-
         # 创建抽屉式菜单
         self.drawer_menu = DrawerMenu(self)
-
 
         # 向侧边栏添加按钮
 
@@ -403,13 +523,6 @@ QPushButton:pressed {
         self.open_csv.clicked.connect(self.open_excel_file)
         self.show_path.clicked.connect(self.start_update)
 
-        # 加载连接状态
-        # 加载图像
-        # pixmap = QPixmap(":/icons/images/错误.png")
-        # pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
-        # self.ui.label.setPixmap(pixmap)
-        # self.ui.label.setFixedSize(16, 16)
-        # self.ui.label.setAlignment(Qt.AlignCenter)
 
         # 创建一个 QTimer 对象
         self.timer = QTimer(self)
@@ -418,21 +531,101 @@ QPushButton:pressed {
         self.timer.start(2000)
 
         # 获取布局对象
-        layout = self.ui.gridLayout
+        layout = self.ui.verticalLayout
         self.cb = ChatBox()
 
 
-        # 将 ChatBox 实例添加到布局的第一行第一列，占据一行一列
-        layout.addWidget(self.cb, 0, 0, 1, 1)
+        # 将 ChatBox 实例添加到布局的最上面
+        self.ui.verticalLayout.removeWidget(self.ui.label_2)
+        self.ui.verticalLayout.insertWidget(0, self.cb)
+        layout.setStretchFactor(self.cb, 4)
+
         # 调整层级关系，将 ChatBox 放在 other_widget 后面
         self.cb.stackUnder(self.drawer_menu)
         # 初始化欢迎语句
-        self.cb.send_message(False,"欢迎！连接手机后请先点击筛选输入条件！")
+        self.cb.send_message(False, "欢迎！连接手机后请先点击筛选输入条件！")
 
         # 初始化线程和工作对象
         self.thread = None
         self.wk = None
 
+        # 隐藏输入框
+        self.ui.textEdit.hide()
+        # 绑定chat按钮
+        self.ui.chat.clicked.connect(self.clicked_chat)
+        # 创建事件过滤器实例
+        self.enter_filter = EnterKeyFilter(self.ui.textEdit, self.handle_enter_press)
+        # 为 QTextEdit 安装事件过滤器
+        self.ui.textEdit.installEventFilter(self.enter_filter)
+
+        # 挂载标题栏即可
+        self.title_bar = ElTitleBar(self, window_title="简历助手")
+
+        # 使用 raise_() 方法将 drawer_menu 提升到前面的层级
+        self.drawer_menu.raise_()
+
+
+
+    # 隐藏布局控件
+    def hide_all_widgets(self,layout):
+        # 遍历水平布局中的所有组件
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            widget = item.widget()
+            if widget:
+                widget.hide()
+
+    def handle_enter_press(self):
+        # 获取用户输入
+        message = self.ui.textEdit.toPlainText()
+        # 清空输入框
+        self.ui.textEdit.clear()
+        # 发送消息到聊天框
+        self.cb.send_message(True, message)
+
+        # 检查线程是否存在且正在运行
+        if self.thread and self.thread.isRunning():
+            self.thread.quit()
+            self.thread.wait()
+
+
+        # 创建工作线程和工作对象
+        self.chat = ChatThread(message)
+        self.thread = QThread()
+
+        # 将工作对象移动到线程中
+        self.chat.moveToThread(self.thread)
+
+        # 连接信号和槽
+        self.thread.started.connect(self.chat.run)
+        self.chat.result.connect(self.receive_chat)
+
+        # 线程结束时进行清理
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.chat.deleteLater)
+
+        # 启动线程
+        self.thread.start()
+
+    def receive_chat(self,content):
+
+        self.cb.send_message(False, content)
+
+    def clicked_chat(self):
+        if not self.is_chat_show:
+            # 隐藏进度条
+            self.ui.progress_bar.hide()
+            # 显示输入框
+            self.ui.textEdit.show()
+
+            self.is_chat_show = True
+        else:
+            # 显示进度条
+            self.ui.progress_bar.show()
+            # 隐藏输入框
+            self.ui.textEdit.hide()
+
+            self.is_chat_show = False
 
 
 
@@ -532,7 +725,7 @@ QPushButton:pressed {
         if hasattr(self, 'worker') and self.worker.isRunning():
             self.worker.terminate()  # 停止任务线程
             # self.ui.log_output.append("任务已停止")  # 待修改
-            self.cb.send_message(False,"任务已停止")
+            self.cb.send_message(False, "任务已停止")
 
         else:
             # self.ui.log_output.append("没有正在运行的任务") # 待修改
@@ -564,8 +757,8 @@ QPushButton:pressed {
         # 自定义数据结构，用于描述表单字段
         form_structure = [
             {"label": "筛选标题(多个关键词空格隔开)", "type": "text"},
-            {"label": "筛选薪水(例如5000-10000)", "type": "text","default": "5000-10000"},
-            {"label": "任务数量", "type": "spinbox","default": 100},
+            {"label": "筛选薪水(例如5000-10000)", "type": "text", "default": "5000-10000"},
+            {"label": "任务数量", "type": "spinbox", "default": 100},
         ]
         dialog = InputFormDialog(form_structure, self)
         if dialog.exec() == QDialog.Accepted:
@@ -582,16 +775,12 @@ QPushButton:pressed {
         else:
             return
 
-
-
-
         task_queue.clear()
         for _ in range(self.num_tasks):
-            add_task(lambda: task_job(job_key,job_key_2))
+            add_task(lambda: task_job(job_key, job_key_2))
 
         # self.ui.log_output.append(f"已添加 {num_tasks} 个任务，标题: {job_key}，薪水：{job_key_2}") # 待修改
         self.cb.send_message(False, f"已添加 {self.num_tasks} 个任务，标题: {'、'.join(job_key)}，薪水：{job_key_2}")
-        
 
     def start_tasks(self):
         """启动后台任务线程"""
@@ -647,6 +836,7 @@ def show_disclaimer():
         return True
     else:
         return False
+
 
 if __name__ == "__main__":
     # 调试：C:\Users\hongz\Downloads\简历助手\python-embed\python.exe C:\Users\hongz\Downloads\简历助手\src\main.py

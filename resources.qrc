@@ -7,5 +7,11 @@
     <file>images/停止.svg</file>
     <file>images/错误.svg</file>
     <file>images/正常.svg</file>
+    <file>images/人工智能.svg</file>
+    <file>images/最小化.svg</file>
+    <file>images/关闭.svg</file>
+    <file>images/放大.svg</file>
+    <file>images/助手.svg</file>
+    <file>images/助手2.svg</file>
   </qresource>
 </RCC>

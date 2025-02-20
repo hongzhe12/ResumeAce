@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
-    <height>750</height>
+    <width>450</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>简历助手v1.6</string>
@@ -38,90 +50,169 @@ QLineEdit:focus {
     border-color: #1296db; /* 文本框获得焦点时边框颜色 */
     outline: none; /* 去除默认的焦点轮廓 */
 }
-
-/* 滚动条样式 */
-QScrollBar:vertical {
-    background: #F0F0F0; /* 垂直滚动条背景颜色 */
-    width: 12px; /* 垂直滚动条宽度 */
-    margin: 12px 0 12px 0; /* 垂直滚动条外边距 */
+QScrollBar:vertical
+{
+    width:8px;
+    background:rgb(0,0,0,0%);
+    margin:0px,0px,0px,0px;
+    padding-top:12px;   /*上预留位置*/
+    padding-bottom:12px;    /*下预留位置*/
+}
+ 
+/*滚动条中滑块的样式*/
+QScrollBar::handle:vertical
+{
+    width:8px;
+    background:rgb(0,0,0,25%);
+    border-radius:4px;
+    min-height:20px;
+}
+ 
+/*鼠标触及滑块样式*/
+QScrollBar::handle:vertical:hover
+{
+    width:9px;
+    background:rgb(0,0,0,50%);
+    border-radius:4px;
+    min-height:20;
+}
+ 
+/*设置下箭头*/
+QScrollBar::add-line:vertical
+{
+    height:12px;
+    width:10px;
+    border-image:url(:/KeyManager/images/icon_pull-down.png);
+    subcontrol-position:bottom;
+}
+ 
+/*设置上箭头*/
+QScrollBar::sub-line:vertical
+{
+    height:12px;
+    width:10px;
+    border-image:url(:/KeyManager/images/icon_pull-up.png);
+    subcontrol-position:top;
+}
+ 
+/*设置下箭头:悬浮状态*/
+QScrollBar::add-line:vertical:hover
+{
+    height:12px;
+    width:10px;
+    border-image:url(:/KeyManager/images/icon_pull-down2.png);
+    subcontrol-position:bottom;
+}
+ 
+/*设置上箭头：悬浮状态*/
+QScrollBar::sub-line:vertical:hover
+{
+    height:12px;
+    width:10px;
+    border-image:url(:/KeyManager/images/icon_pull-up2.png);
+    subcontrol-position:top;
+}
+ 
+/*当滚动条滚动的时候，上面的部分和下面的部分*/
+QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical
+{
+    background:rgb(0,0,0,10%);
+    border-radius:4px;
 }
 
-QScrollBar::handle:vertical {
-    background: #B0B0B0; /* 垂直滚动条滑块背景颜色 */
-    min-height: 20px; /* 垂直滚动条滑块最小高度 */
-    border-radius: 6px; /* 垂直滚动条滑块圆角 */
+QScrollBar:horizontal
+{
+    height: 8px;  /* 设置滚动条高度 */
+    background: rgb(0, 0, 0, 0%);  /* 背景透明 */
+    margin: 0px;  /* 外边距 */
+    padding-left: 12px;  /* 左预留位置 */
+    padding-right: 12px;  /* 右预留位置 */
 }
 
-QScrollBar::handle:vertical:hover {
-    background: #909090; /* 鼠标悬停时垂直滚动条滑块背景颜色 */
+/* 滚动条中滑块的样式 */
+QScrollBar::handle:horizontal
+{
+    height: 8px;  /* 设置滑块高度 */
+    background: rgb(0, 0, 0, 25%);  /* 滑块背景颜色及透明度 */
+    border-radius: 4px;
+    min-width: 20px;  /* 最小宽度 */
 }
 
-QScrollBar::add-line:vertical {
-    border: none;
-    background: none;
-    height: 12px;
-    subcontrol-position: bottom;
-    subcontrol-origin: margin;
+/* 鼠标触及滑块样式 */
+QScrollBar::handle:horizontal:hover
+{
+    height: 9px;  /* 鼠标悬停时滑块高度变化 */
+    background: rgb(0, 0, 0, 50%);
+    border-radius: 4px;
+    min-width: 20px;
 }
 
-QScrollBar::sub-line:vertical {
-    border: none;
-    background: none;
-    height: 12px;
-    subcontrol-position: top;
-    subcontrol-origin: margin;
-}
-
-QScrollBar:horizontal {
-    background: #F0F0F0; /* 水平滚动条背景颜色 */
-    height: 12px; /* 水平滚动条高度 */
-    margin: 0 12px 0 12px; /* 水平滚动条外边距 */
-}
-
-QScrollBar::handle:horizontal {
-    background: #B0B0B0; /* 水平滚动条滑块背景颜色 */
-    min-width: 20px; /* 水平滚动条滑块最小宽度 */
-    border-radius: 6px; /* 水平滚动条滑块圆角 */
-}
-
-QScrollBar::handle:horizontal:hover {
-    background: #909090; /* 鼠标悬停时水平滚动条滑块背景颜色 */
-}
-
-QScrollBar::add-line:horizontal {
-    border: none;
-    background: none;
+/* 设置右箭头 */
+QScrollBar::add-line:horizontal
+{
     width: 12px;
+    height: 10px;
+    border-image: url(:/KeyManager/images/icon_pull-right.png);  /* 对应右箭头图片，需确保资源路径正确 */
     subcontrol-position: right;
-    subcontrol-origin: margin;
 }
 
-QScrollBar::sub-line:horizontal {
-    border: none;
-    background: none;
+/* 设置左箭头 */
+QScrollBar::sub-line:horizontal
+{
     width: 12px;
+    height: 10px;
+    border-image: url(:/KeyManager/images/icon_pull-left.png);  /* 对应左箭头图片 */
     subcontrol-position: left;
-    subcontrol-origin: margin;
+}
+
+/* 设置右箭头:悬浮状态 */
+QScrollBar::add-line:horizontal:hover
+{
+    width: 12px;
+    height: 10px;
+    border-image: url(:/KeyManager/images/icon_pull-right2.png);
+    subcontrol-position: right;
+}
+
+/* 设置左箭头：悬浮状态 */
+QScrollBar::sub-line:horizontal:hover
+{
+    width: 12px;
+    height: 10px;
+    border-image: url(:/KeyManager/images/icon_pull-left2.png);
+    subcontrol-position: left;
+}
+
+/* 当滚动条滚动的时候，左边的部分和右边的部分 */
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal
+{
+    background: rgb(0, 0, 0, 10%);
+    border-radius: 4px;
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QProgressBar" name="progress_bar">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QProgressBar {
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,0,1">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="textEdit"/>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progress_bar">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QProgressBar {
     border: 1px solid grey;
     border-radius: 5px;
 	background-color: rgb(243, 243, 243);
@@ -133,74 +224,29 @@ QProgressBar::chunk {
     width: 20px;
     margin: 0.5px;
 }</string>
-     </property>
-     <property name="value">
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="connect_button">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
        </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: transparent;
-    border: none;
-    padding: 5px;
-}
-
-QPushButton:hover {
-    background-color: #e0e0e0;
-    border-radius: 5px;
-}
-
-QPushButton:pressed {
-    background-color: #c0c0c0;
-    border-radius: 5px;
-}</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/icons/images/连接.svg</normaloff>:/icons/images/连接.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
+       <property name="value">
+        <number>0</number>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="add_task_button">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0">
+       <item>
+        <widget class="QPushButton" name="connect_button">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
     background-color: transparent;
     border: none;
     padding: 5px;
@@ -215,37 +261,37 @@ QPushButton:pressed {
     background-color: #c0c0c0;
     border-radius: 5px;
 }</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/icons/images/筛选.svg</normaloff>:/icons/images/筛选.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="start_button">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/images/连接.svg</normaloff>:/icons/images/连接.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="add_task_button">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
     background-color: transparent;
     border: none;
     padding: 5px;
@@ -260,37 +306,37 @@ QPushButton:pressed {
     background-color: #c0c0c0;
     border-radius: 5px;
 }</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/icons/images/开始.svg</normaloff>:/icons/images/开始.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="stop_button">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/images/筛选.svg</normaloff>:/icons/images/筛选.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="start_button">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
     background-color: transparent;
     border: none;
     padding: 5px;
@@ -305,21 +351,113 @@ QPushButton:pressed {
     background-color: #c0c0c0;
     border-radius: 5px;
 }</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/icons/images/停止.svg</normaloff>:/icons/images/停止.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-      </widget>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/images/开始.svg</normaloff>:/icons/images/开始.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="stop_button">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+QPushButton:pressed {
+    background-color: #c0c0c0;
+    border-radius: 5px;
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/images/停止.svg</normaloff>:/icons/images/停止.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="chat">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+QPushButton:pressed {
+    background-color: #c0c0c0;
+    border-radius: 5px;
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/images/人工智能.svg</normaloff>:/icons/images/人工智能.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

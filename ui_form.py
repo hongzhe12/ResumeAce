@@ -16,14 +16,17 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
-    QProgressBar, QPushButton, QSizePolicy, QWidget)
+    QProgressBar, QPushButton, QSizePolicy, QTextEdit,
+    QVBoxLayout, QWidget)
 import resources_rc
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(498, 750)
+        Form.resize(450, 600)
+        Form.setMinimumSize(QSize(0, 0))
+        Form.setMaximumSize(QSize(16777215, 16777215))
         Form.setStyleSheet(u"/* \u4e3b\u7a97\u53e3\u6837\u5f0f */\n"
 "QWidget {\n"
 "    background-color: white; /* \u4e3b\u7a97\u53e3\u80cc\u666f\u989c\u8272 */\n"
@@ -48,80 +51,163 @@ class Ui_Form(object):
 "    border-color: #1296db; /* \u6587\u672c\u6846\u83b7\u5f97\u7126\u70b9\u65f6\u8fb9\u6846\u989c\u8272 */\n"
 "    outline: none; /* \u53bb\u9664\u9ed8\u8ba4\u7684\u7126\u70b9\u8f6e\u5ed3 */\n"
 "}\n"
-"\n"
-"/* \u6eda\u52a8\u6761\u6837\u5f0f */\n"
-""
-                        "QScrollBar:vertical {\n"
-"    background: #F0F0F0; /* \u5782\u76f4\u6eda\u52a8\u6761\u80cc\u666f\u989c\u8272 */\n"
-"    width: 12px; /* \u5782\u76f4\u6eda\u52a8\u6761\u5bbd\u5ea6 */\n"
-"    margin: 12px 0 12px 0; /* \u5782\u76f4\u6eda\u52a8\u6761\u5916\u8fb9\u8ddd */\n"
+"QScrollBar:vertical\n"
+"{\n"
+"    width:8px;"
+                        "\n"
+"    background:rgb(0,0,0,0%);\n"
+"    margin:0px,0px,0px,0px;\n"
+"    padding-top:12px;   /*\u4e0a\u9884\u7559\u4f4d\u7f6e*/\n"
+"    padding-bottom:12px;    /*\u4e0b\u9884\u7559\u4f4d\u7f6e*/\n"
+"}\n"
+" \n"
+"/*\u6eda\u52a8\u6761\u4e2d\u6ed1\u5757\u7684\u6837\u5f0f*/\n"
+"QScrollBar::handle:vertical\n"
+"{\n"
+"    width:8px;\n"
+"    background:rgb(0,0,0,25%);\n"
+"    border-radius:4px;\n"
+"    min-height:20px;\n"
+"}\n"
+" \n"
+"/*\u9f20\u6807\u89e6\u53ca\u6ed1\u5757\u6837\u5f0f*/\n"
+"QScrollBar::handle:vertical:hover\n"
+"{\n"
+"    width:9px;\n"
+"    background:rgb(0,0,0,50%);\n"
+"    border-radius:4px;\n"
+"    min-height:20;\n"
+"}\n"
+" \n"
+"/*\u8bbe\u7f6e\u4e0b\u7bad\u5934*/\n"
+"QScrollBar::add-line:vertical\n"
+"{\n"
+"    height:12px;\n"
+"    width:10px;\n"
+"    border-image:url(:/KeyManager/images/icon_pull-down.png);\n"
+"    subcontrol-position:bottom;\n"
+"}\n"
+" \n"
+"/*\u8bbe\u7f6e\u4e0a\u7bad\u5934*/\n"
+"QScrollBar::sub-line:vertical\n"
+"{\n"
+"    height:12px;\n"
+"    width:10px;\n"
+"    border-image:url(:"
+                        "/KeyManager/images/icon_pull-up.png);\n"
+"    subcontrol-position:top;\n"
+"}\n"
+" \n"
+"/*\u8bbe\u7f6e\u4e0b\u7bad\u5934:\u60ac\u6d6e\u72b6\u6001*/\n"
+"QScrollBar::add-line:vertical:hover\n"
+"{\n"
+"    height:12px;\n"
+"    width:10px;\n"
+"    border-image:url(:/KeyManager/images/icon_pull-down2.png);\n"
+"    subcontrol-position:bottom;\n"
+"}\n"
+" \n"
+"/*\u8bbe\u7f6e\u4e0a\u7bad\u5934\uff1a\u60ac\u6d6e\u72b6\u6001*/\n"
+"QScrollBar::sub-line:vertical:hover\n"
+"{\n"
+"    height:12px;\n"
+"    width:10px;\n"
+"    border-image:url(:/KeyManager/images/icon_pull-up2.png);\n"
+"    subcontrol-position:top;\n"
+"}\n"
+" \n"
+"/*\u5f53\u6eda\u52a8\u6761\u6eda\u52a8\u7684\u65f6\u5019\uff0c\u4e0a\u9762\u7684\u90e8\u5206\u548c\u4e0b\u9762\u7684\u90e8\u5206*/\n"
+"QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical\n"
+"{\n"
+"    background:rgb(0,0,0,10%);\n"
+"    border-radius:4px;\n"
 "}\n"
 "\n"
-"QScrollBar::handle:vertical {\n"
-"    background: #B0B0B0; /* \u5782\u76f4\u6eda\u52a8\u6761\u6ed1\u5757\u80cc\u666f\u989c\u8272 */\n"
-"    min-height: 20px; /* \u5782\u76f4\u6eda\u52a8\u6761\u6ed1\u5757\u6700\u5c0f\u9ad8\u5ea6 */\n"
-"    border-radius: 6px; /* \u5782\u76f4\u6eda\u52a8\u6761\u6ed1\u5757\u5706\u89d2 */\n"
+"QScrollBar:horizontal\n"
+"{\n"
+"    height: 8px;  /* \u8bbe\u7f6e\u6eda\u52a8\u6761\u9ad8\u5ea6 */\n"
+"    background: rgb(0, 0,"
+                        " 0, 0%);  /* \u80cc\u666f\u900f\u660e */\n"
+"    margin: 0px;  /* \u5916\u8fb9\u8ddd */\n"
+"    padding-left: 12px;  /* \u5de6\u9884\u7559\u4f4d\u7f6e */\n"
+"    padding-right: 12px;  /* \u53f3\u9884\u7559\u4f4d\u7f6e */\n"
 "}\n"
 "\n"
-"QScrollBar::handle:vertical:hover {\n"
-"    background: #909090; /* \u9f20\u6807\u60ac\u505c\u65f6\u5782\u76f4\u6eda\u52a8\u6761\u6ed1\u5757\u80cc\u666f\u989c\u8272 */\n"
+"/* \u6eda\u52a8\u6761\u4e2d\u6ed1\u5757\u7684\u6837\u5f0f */\n"
+"QScrollBar::handle:horizontal\n"
+"{\n"
+"    height: 8px;  /* \u8bbe\u7f6e\u6ed1\u5757\u9ad8\u5ea6 */\n"
+"    background: rgb(0, 0, 0, 25%);  /* \u6ed1\u5757\u80cc\u666f\u989c\u8272\u53ca\u900f\u660e\u5ea6 */\n"
+"    border-radius: 4px;\n"
+"    min-width: 20px;  /* \u6700\u5c0f\u5bbd\u5ea6 */\n"
 "}\n"
 "\n"
-"QScrollBar::add-line:vertical {\n"
-"    border: none;\n"
-"    background: none;\n"
-"    height: 12px;\n"
-"    subcontrol-position: bottom;\n"
-"    subcontrol-origin: margin;\n"
+"/* \u9f20\u6807\u89e6\u53ca\u6ed1\u5757\u6837\u5f0f */\n"
+"QScrollBar::handle:horizontal:hover\n"
+"{\n"
+"    height: 9px;  /* \u9f20\u6807\u60ac\u505c\u65f6\u6ed1\u5757\u9ad8\u5ea6\u53d8\u5316 */\n"
+"    background: rgb(0, 0, 0, 50%);\n"
+"    border-radius: 4px;\n"
+"    min-width: 20px;\n"
 "}\n"
 "\n"
-"QScrollBar::sub-line:vertical {\n"
-""
-                        "    border: none;\n"
-"    background: none;\n"
-"    height: 12px;\n"
-"    subcontrol-position: top;\n"
-"    subcontrol-origin: margin;\n"
-"}\n"
-"\n"
-"QScrollBar:horizontal {\n"
-"    background: #F0F0F0; /* \u6c34\u5e73\u6eda\u52a8\u6761\u80cc\u666f\u989c\u8272 */\n"
-"    height: 12px; /* \u6c34\u5e73\u6eda\u52a8\u6761\u9ad8\u5ea6 */\n"
-"    margin: 0 12px 0 12px; /* \u6c34\u5e73\u6eda\u52a8\u6761\u5916\u8fb9\u8ddd */\n"
-"}\n"
-"\n"
-"QScrollBar::handle:horizontal {\n"
-"    background: #B0B0B0; /* \u6c34\u5e73\u6eda\u52a8\u6761\u6ed1\u5757\u80cc\u666f\u989c\u8272 */\n"
-"    min-width: 20px; /* \u6c34\u5e73\u6eda\u52a8\u6761\u6ed1\u5757\u6700\u5c0f\u5bbd\u5ea6 */\n"
-"    border-radius: 6px; /* \u6c34\u5e73\u6eda\u52a8\u6761\u6ed1\u5757\u5706\u89d2 */\n"
-"}\n"
-"\n"
-"QScrollBar::handle:horizontal:hover {\n"
-"    background: #909090; /* \u9f20\u6807\u60ac\u505c\u65f6\u6c34\u5e73\u6eda\u52a8\u6761\u6ed1\u5757\u80cc\u666f\u989c\u8272 */\n"
-"}\n"
-"\n"
-"QScrollBar::add-line:horizontal {\n"
-"    border: none;\n"
-"    back"
-                        "ground: none;\n"
+"/* \u8bbe\u7f6e\u53f3\u7bad\u5934 */\n"
+"QScrollBar::add-line:horizontal\n"
+"{\n"
 "    width: 12px;\n"
+"    heigh"
+                        "t: 10px;\n"
+"    border-image: url(:/KeyManager/images/icon_pull-right.png);  /* \u5bf9\u5e94\u53f3\u7bad\u5934\u56fe\u7247\uff0c\u9700\u786e\u4fdd\u8d44\u6e90\u8def\u5f84\u6b63\u786e */\n"
 "    subcontrol-position: right;\n"
-"    subcontrol-origin: margin;\n"
 "}\n"
 "\n"
-"QScrollBar::sub-line:horizontal {\n"
-"    border: none;\n"
-"    background: none;\n"
+"/* \u8bbe\u7f6e\u5de6\u7bad\u5934 */\n"
+"QScrollBar::sub-line:horizontal\n"
+"{\n"
 "    width: 12px;\n"
+"    height: 10px;\n"
+"    border-image: url(:/KeyManager/images/icon_pull-left.png);  /* \u5bf9\u5e94\u5de6\u7bad\u5934\u56fe\u7247 */\n"
 "    subcontrol-position: left;\n"
-"    subcontrol-origin: margin;\n"
+"}\n"
+"\n"
+"/* \u8bbe\u7f6e\u53f3\u7bad\u5934:\u60ac\u6d6e\u72b6\u6001 */\n"
+"QScrollBar::add-line:horizontal:hover\n"
+"{\n"
+"    width: 12px;\n"
+"    height: 10px;\n"
+"    border-image: url(:/KeyManager/images/icon_pull-right2.png);\n"
+"    subcontrol-position: right;\n"
+"}\n"
+"\n"
+"/* \u8bbe\u7f6e\u5de6\u7bad\u5934\uff1a\u60ac\u6d6e\u72b6\u6001 */\n"
+"QScrollBar::sub-line:horizontal:hover\n"
+"{\n"
+"    width: 12px;\n"
+"    height: 10px;\n"
+"    border-image: url(:/KeyManager/images/icon_pull-left2.png);"
+                        "\n"
+"    subcontrol-position: left;\n"
+"}\n"
+"\n"
+"/* \u5f53\u6eda\u52a8\u6761\u6eda\u52a8\u7684\u65f6\u5019\uff0c\u5de6\u8fb9\u7684\u90e8\u5206\u548c\u53f3\u8fb9\u7684\u90e8\u5206 */\n"
+"QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal\n"
+"{\n"
+"    background: rgb(0, 0, 0, 10%);\n"
+"    border-radius: 4px;\n"
 "}")
         self.gridLayout = QGridLayout(Form)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(u"verticalLayout")
         self.label_2 = QLabel(Form)
         self.label_2.setObjectName(u"label_2")
 
-        self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.label_2)
+
+        self.textEdit = QTextEdit(Form)
+        self.textEdit.setObjectName(u"textEdit")
+
+        self.verticalLayout.addWidget(self.textEdit)
 
         self.progress_bar = QProgressBar(Form)
         self.progress_bar.setObjectName(u"progress_bar")
@@ -140,7 +226,7 @@ class Ui_Form(object):
 "}")
         self.progress_bar.setValue(0)
 
-        self.gridLayout.addWidget(self.progress_bar, 1, 0, 1, 1)
+        self.verticalLayout.addWidget(self.progress_bar)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -250,8 +336,40 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.stop_button)
 
+        self.chat = QPushButton(Form)
+        self.chat.setObjectName(u"chat")
+        self.chat.setMinimumSize(QSize(0, 0))
+        self.chat.setFont(font)
+        self.chat.setStyleSheet(u"QPushButton {\n"
+"    background-color: transparent;\n"
+"    border: none;\n"
+"    padding: 5px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #e0e0e0;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: #c0c0c0;\n"
+"    border-radius: 5px;\n"
+"}")
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/images/\u4eba\u5de5\u667a\u80fd.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.chat.setIcon(icon4)
+        self.chat.setIconSize(QSize(32, 32))
 
-        self.gridLayout.addLayout(self.horizontalLayout, 2, 0, 1, 1)
+        self.horizontalLayout.addWidget(self.chat)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
+        self.verticalLayout.setStretch(0, 1)
+        self.verticalLayout.setStretch(1, 1)
+        self.verticalLayout.setStretch(3, 1)
+
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
 
         self.retranslateUi(Form)
@@ -266,5 +384,6 @@ class Ui_Form(object):
         self.add_task_button.setText("")
         self.start_button.setText("")
         self.stop_button.setText("")
+        self.chat.setText("")
     # retranslateUi
 

@@ -3,6 +3,7 @@ from PySide6.QtCore import QPropertyAnimation, QEasingCurve, QRect, QSize
 from PySide6.QtGui import QIcon
 import resources_rc
 
+
 class DrawerMenu(QFrame):
     def __init__(self, parent, width=200, button_icon_path=":/icons/images/菜单.svg"):
         super().__init__(parent)
@@ -17,6 +18,11 @@ class DrawerMenu(QFrame):
         self.setStyleSheet("background-color: #DCDCDC;")
         self.setGeometry(-self.width, 0, self.width, self.parent.height())  # 初始位置在视图外面
         self.layout = QVBoxLayout(self)
+
+        # 创建一个空白QWidget作为顶部间隔，可按需调整高度
+        topSpacerWidget = QWidget()
+        topSpacerWidget.setFixedHeight(30)  # 这里设置固定高度为50像素，可根据需要调整
+        self.layout.addWidget(topSpacerWidget)
 
         # 创建一个垂直方向起间隔作用的QWidget（本质利用其空白占位达到间隔效果）
         verticalSpacerWidget = QWidget()
@@ -52,7 +58,7 @@ class DrawerMenu(QFrame):
 
     def add_widget(self, widget):
         """向侧边栏添加控件"""
-        # 在间隔控件之前添加新控件
+        # 在垂直间隔控件之前添加新控件
         index = self.layout.count() - 1
         self.layout.insertWidget(index, widget)
         # 绑定收起事件

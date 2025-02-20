@@ -50,7 +50,7 @@ task_queue = []
 
 ADB_PATH = "adb"  # 开发环境
 
-# ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
+ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
 # 定义样式表
 QScrollBar_style_sheet = """
@@ -840,6 +840,8 @@ def show_disclaimer():
 
 if __name__ == "__main__":
     # 调试：C:\Users\hongz\Downloads\简历助手\python-embed\python.exe C:\Users\hongz\Downloads\简历助手\src\main.py
+    # 通过 Get-ChildItem 命令获取当前目录下所有 .py 文件，再使用 ForEach-Object 对每个文件执行 pyarmor gen 命令
+    # Get-ChildItem -Filter *.py | ForEach-Object { pyarmor gen $_.FullName }
     app = QApplication(sys.argv)
     if show_disclaimer():
         window = MyWidget()

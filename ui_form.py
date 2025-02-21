@@ -27,6 +27,7 @@ class Ui_Form(object):
         Form.resize(450, 600)
         Form.setMinimumSize(QSize(0, 0))
         Form.setMaximumSize(QSize(16777215, 16777215))
+        Form.setAutoFillBackground(False)
         Form.setStyleSheet(u"/* \u4e3b\u7a97\u53e3\u6837\u5f0f */\n"
 "QWidget {\n"
 "    background-color: white; /* \u4e3b\u7a97\u53e3\u80cc\u666f\u989c\u8272 */\n"

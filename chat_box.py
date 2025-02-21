@@ -10,11 +10,13 @@ from ui_chat_box import Ui_ChatBox
 class ChatBox(QWidget):
     def __init__(self):
         super().__init__()
+        self.is_reply_complete = False
+        self.streaming_reply = ''
+        self.current_label = None  # 用于存储当前的消息气泡
         self.ui = Ui_ChatBox()
         self.ui.setupUi(self)
 
-
-    def send_message(self, is_sender,message):
+    def send_message(self, is_sender, message):
         if is_sender:
             if message:
                 self.add_message(message, is_sender)
@@ -78,6 +80,11 @@ class ChatBox(QWidget):
         self.ui.chat_layout.addStretch()
         self.scroll_to_bottom()
 
+        if not is_sender:
+            self.current_label = message_label  # 保存当前的消息气泡
+
+
+
     def scroll_to_bottom(self):
         scroll_bar = self.ui.scroll_area.verticalScrollBar()
         QTimer.singleShot(100, lambda: scroll_bar.setValue(scroll_bar.maximum()))
@@ -104,6 +111,26 @@ class ChatBox(QWidget):
         wrapped_text = "\n".join(lines)
         print("换行后文本:", wrapped_text)
         return wrapped_text
+
+    def handle_streaming_response(self, token):
+        """处理流式响应的新片段"""
+        self.streaming_reply += token
+        if self.current_label:
+            current_text = self.current_label.text()
+            new_text = current_text + token
+            elided_text = self.wrap_text(new_text, self.current_label.font(), 250)
+            self.current_label.setText(elided_text)
+            self.scroll_to_bottom()
+
+        # 这里可以添加一些逻辑判断是否回复结束，比如根据特定标识等
+        # 假设没有特殊标识，简单延迟后展示完整内容
+        # QTimer.singleShot(500, self.show_complete_reply)
+
+    def show_complete_reply(self):
+        """展示完整的回复"""
+        if self.streaming_reply:
+            self.add_message(self.streaming_reply, False)
+            self.streaming_reply = ""
 
 
 if __name__ == '__main__':

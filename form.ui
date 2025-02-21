@@ -25,6 +25,9 @@
   <property name="windowTitle">
    <string>简历助手v1.6</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
   <property name="styleSheet">
    <string notr="true">/* 主窗口样式 */
 QWidget {

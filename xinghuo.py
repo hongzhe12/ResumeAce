@@ -25,7 +25,7 @@ def get_xinghuo_response(user_input):
         spark_api_key=SPARKAI_API_KEY,
         spark_api_secret=SPARKAI_API_SECRET,
         spark_llm_domain=SPARKAI_DOMAIN,
-        streaming=False,
+        streaming=True,
         request_timeout=10
     )
     messages = [ChatMessage(

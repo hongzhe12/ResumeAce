@@ -583,6 +583,10 @@ QPushButton:pressed {
         # 发送消息到聊天框
         self.cb.send_message(True, message)
 
+        # 模拟思考
+        self.cb.send_message(False, "...")
+
+
         # 检查线程是否存在且正在运行
         if self.thread and self.thread.isRunning():
             self.thread.quit()
@@ -600,6 +604,7 @@ QPushButton:pressed {
         self.thread.started.connect(self.chat.run)
         self.chat.result.connect(self.receive_chat)
 
+
         # 线程结束时进行清理
         self.thread.finished.connect(self.thread.deleteLater)
         self.thread.finished.connect(self.chat.deleteLater)
@@ -608,8 +613,8 @@ QPushButton:pressed {
         self.thread.start()
 
     def receive_chat(self,content):
-
         self.cb.send_message(False, content)
+
 
     def clicked_chat(self):
         if not self.is_chat_show:

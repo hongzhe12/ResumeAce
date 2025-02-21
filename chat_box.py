@@ -1,9 +1,9 @@
 import sys
-from pprint import pprint
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QHBoxLayout
 from PySide6.QtGui import QFont, QFontMetrics
 from PySide6.QtCore import Qt, QTimer
 
+# 假设 ui_chat_box 模块和 Ui_ChatBox 类已经定义好
 from ui_chat_box import Ui_ChatBox
 
 
@@ -12,36 +12,30 @@ class ChatBox(QWidget):
         super().__init__()
         self.ui = Ui_ChatBox()
         self.ui.setupUi(self)
-
+        self.current_message_timer = None
+        self.current_message_chars = 0
 
     def send_message(self, is_sender,message):
-        if is_sender:
-            if message:
-                self.add_message(message, is_sender)
-        else:
-            if message:
-                self.add_message(message, is_sender)
+        if message:
+            self.add_message(message, is_sender)
 
     def add_message(self, message, is_sender):
+        # 清理之前的定时器和计数器
+        if self.current_message_timer:
+            self.current_message_timer.stop()
+        self.current_message_chars = 0
+
         if self.ui.chat_layout.count() > 1:
             self.ui.chat_layout.takeAt(self.ui.chat_layout.count() - 1)
 
         message_label = QLabel()
-        message_label.setWordWrap(False)
         font = QFont("Microsoft YaHei UI", 12)
         message_label.setFont(font)
         message_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         text_max_width = 250
-        message_label_max_width = text_max_width + 50
-        message_label.setMaximumWidth(message_label_max_width)
-
-        font_metrics = QFontMetrics(font)
-        text_width = font_metrics.horizontalAdvance(message)
-        print("文本宽度:", text_width)
-
         elided_text = self.wrap_text(message, font, text_max_width)
-        message_label.setText(elided_text)
+        message_label.setMaximumWidth(text_max_width + 50)
 
         message_label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
 
@@ -76,7 +70,18 @@ class ChatBox(QWidget):
 
         self.ui.chat_layout.addLayout(message_layout)
         self.ui.chat_layout.addStretch()
-        self.scroll_to_bottom()
+
+        # 开始逐字显示文本
+        self.current_message_timer = QTimer(self)
+        self.current_message_timer.timeout.connect(lambda: self.show_next_char(message_label, elided_text))
+        self.current_message_timer.start(25)  # 设置字符间的延迟时间
+
+    def show_next_char(self, label, message):
+        self.current_message_chars += 1
+        label.setText(message[:self.current_message_chars])
+        if self.current_message_chars >= len(message):
+            self.current_message_timer.stop()
+            self.scroll_to_bottom()
 
     def scroll_to_bottom(self):
         scroll_bar = self.ui.scroll_area.verticalScrollBar()
@@ -90,7 +95,6 @@ class ChatBox(QWidget):
         for char in message:
             test_line = current_line + char
             text_line_width = font_metrics.horizontalAdvance(test_line)
-            print("当前字符:", char, "当前文本宽度:", text_line_width)
             if text_line_width > max_width:
                 lines.append(current_line.strip())
                 current_line = char
@@ -100,10 +104,26 @@ class ChatBox(QWidget):
         if current_line:
             lines.append(current_line.strip())
 
-        pprint(lines)
         wrapped_text = "\n".join(lines)
-        print("换行后文本:", wrapped_text)
         return wrapped_text
+
+    def remove_last_message(self):
+        layout = self.ui.chat_layout
+        count = layout.count()
+
+        # 我们需要找到最后一个 QHBoxLayout 并移除它
+        for i in reversed(range(count)):
+            item = layout.itemAt(i)
+            if isinstance(item, QHBoxLayout):
+                # 移除所有子项
+                while item.count():
+                    child_item = item.takeAt(0)
+                    if child_item.widget():
+                        child_item.widget().deleteLater()
+                # 移除 QHBoxLayout 自身
+                layout.removeItem(item)
+                break
+        self.scroll_to_bottom()
 
 
 if __name__ == '__main__':

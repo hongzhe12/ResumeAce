@@ -107,24 +107,6 @@ class ChatBox(QWidget):
         wrapped_text = "\n".join(lines)
         return wrapped_text
 
-    def remove_last_message(self):
-        layout = self.ui.chat_layout
-        count = layout.count()
-
-        # 我们需要找到最后一个 QHBoxLayout 并移除它
-        for i in reversed(range(count)):
-            item = layout.itemAt(i)
-            if isinstance(item, QHBoxLayout):
-                # 移除所有子项
-                while item.count():
-                    child_item = item.takeAt(0)
-                    if child_item.widget():
-                        child_item.widget().deleteLater()
-                # 移除 QHBoxLayout 自身
-                layout.removeItem(item)
-                break
-        self.scroll_to_bottom()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -57,6 +57,5 @@ if __name__ == '__main__':
         # 通常 generations 是一个二维列表，这里假设取第一个生成结果
         first_generation = result.generations[0][0]
         reply_text = first_generation.text
-        print("回复文本:", reply_text)
     else:
         print("结果不是 LLMResult 类型")

@@ -122,7 +122,6 @@ class MainWindow(QWidget):
         dialog = InputFormDialog(form_structure, self)
         if dialog.exec() == QDialog.Accepted:
             values = dialog.get_input_values()
-            print("输入的值:", values)
 
 
 if __name__ == '__main__':

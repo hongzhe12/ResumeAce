@@ -88,59 +88,37 @@ class ExcThread(QObject):
             self.is_finish.emit(True)
 
 
-
-# class ChatThread(QObject):
-#     # 定义信号
-#     result = Signal(str)
-#
-#     def __init__(self,message):
-#         super().__init__()
-#         self.message = message
-#
-#     def run(self):
-#         # 调用星火大模型接口
-#         res = get_xinghuo_response(self.message)
-#
-#         # 从结果中提取回复文本
-#         if isinstance(res, LLMResult):
-#             # 通常 generations 是一个二维列表，这里假设取第一个生成结果
-#             first_generation = res.generations[0][0]
-#             reply_text = first_generation.text
-#             self.result.emit(reply_text)
-#         else:
-#             print("结果不是 LLMResult 类型")
-#             self.result.emit("不好意思，正在学习中...")
-
 class StreamingChunkHandler(ChunkPrintHandler):
     def __init__(self, signal):
         self.signal = signal
         super().__init__()
 
     def on_llm_new_token(self, token: str, **kwargs) -> None:
-        print("调试：",token)
         self.signal.emit(token)
 
 
-class ChatThread(QThread):
-    new_token = Signal(str)
+class ChatThread(QObject):
+    # 定义信号
+    result = Signal(str)
 
-    def __init__(self, user_input):
+    def __init__(self,message):
         super().__init__()
-        self.user_input = user_input
+        self.message = message
 
     def run(self):
-        spark = ChatSparkLLM(
-            spark_api_url=SPARKAI_URL,
-            spark_app_id=SPARKAI_APP_ID,
-            spark_api_key=SPARKAI_API_KEY,
-            spark_api_secret=SPARKAI_API_SECRET,
-            spark_llm_domain=SPARKAI_DOMAIN,
-            streaming=True,
-            request_timeout=10
-        )
-        messages = [ChatMessage(role="user", content=self.user_input)]
-        handler = StreamingChunkHandler(self.new_token)
-        response = spark.generate([messages], callbacks=[handler])
+        # 调用星火大模型接口
+        res = get_xinghuo_response(self.message)
+
+        # 从结果中提取回复文本
+        if isinstance(res, LLMResult):
+            # 通常 generations 是一个二维列表，这里假设取第一个生成结果
+            first_generation = res.generations[0][0]
+            reply_text = first_generation.text
+            self.result.emit(reply_text)
+        else:
+            print("结果不是 LLMResult 类型")
+            self.result.emit("不好意思，正在学习中...")
+
 
 
 
@@ -293,9 +271,7 @@ def append_to_csv(file_path, data: list, header=None) -> None:
             # 如果文件不存在且提供了表头，则写入表头
             if not file_exists and header:
                 writer.writerow(header)
-
             writer.writerow(data)
-        print(f"数据已成功追加到 {file_path}")
     except Exception as e:
         print(f"写入 CSV 文件时出现错误: {e}")
 
@@ -537,9 +513,6 @@ class MyWidget(ElWindow):
         # 发送消息到聊天框
         self.cb.send_message(True, message)
 
-        # 模拟思考
-        self.cb.send_message(False, "...")
-
 
         # 检查线程是否存在且正在运行
         if self.thread and self.thread.isRunning():
@@ -556,9 +529,7 @@ class MyWidget(ElWindow):
 
         # 连接信号和槽
         self.thread.started.connect(self.chat.run)
-        # self.chat.new_token.connect(self.receive_chat)
-        self.chat.new_token.connect(self.cb.handle_streaming_response)
-
+        self.chat.result.connect(self.receive_chat)
 
         # 线程结束时进行清理
         self.thread.finished.connect(self.thread.deleteLater)
@@ -568,8 +539,8 @@ class MyWidget(ElWindow):
         self.thread.start()
 
     def receive_chat(self,content):
-        self.cb.send_message(False, content)
 
+        self.cb.send_message(False, content)
 
     def clicked_chat(self):
         if not self.is_chat_show:
@@ -612,7 +583,6 @@ class MyWidget(ElWindow):
         dialog = InputFormDialog(form_structure, self)
         if dialog.exec() == QDialog.Accepted:
             values = dialog.get_input_values()
-            print("输入的值:", values)
 
             # 获取用户输入的IP
             ipaddress = values[0]
@@ -621,7 +591,6 @@ class MyWidget(ElWindow):
                 [ADB_PATH, 'connect', ipaddress],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
-            print([ADB_PATH, 'connect', ipaddress])
             self.ui.statusbar.showMessage(result.stdout)
 
 
@@ -641,7 +610,6 @@ class MyWidget(ElWindow):
 
             # 检查线程是否存在且正在运行
             if self.thread and self.thread.isRunning():
-                print("Thread is already running.")
                 return
 
             # 创建工作线程和工作对象
@@ -654,6 +622,7 @@ class MyWidget(ElWindow):
             # 连接信号和槽
             self.thread.started.connect(self.wk.run)
             self.wk.is_finish.connect(lambda res: print("打开成功") if res else print("打开失败"))
+
 
             # 启动线程
             self.thread.start()

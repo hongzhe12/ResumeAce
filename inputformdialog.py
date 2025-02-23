@@ -1,5 +1,5 @@
 import sys
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QDialog, QDateEdit, QSpinBox
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QDialog, QDateEdit, QSpinBox, QSpacerItem, QSizePolicy
 from PySide6.QtGui import QFont
 from PySide6.QtCore import QDate
 
@@ -20,9 +20,8 @@ class InputFormDialog(QDialog):
 
         self.initUI()
         self.setWindowTitle("输入窗口")
-        self.setFixedSize(450, 350)  # 固定窗口大小为宽400像素，高300像素
+        self.adjust_window_size()
         self.move_to_center()
-
 
     def move_to_center(self):
         # 获取屏幕的几何信息
@@ -75,6 +74,10 @@ class InputFormDialog(QDialog):
             layout.addWidget(input_widget)
             self.input_widgets.append(input_widget)
 
+            # 添加垂直间隔
+            spacer = QSpacerItem(20, 10, QSizePolicy.Minimum, QSizePolicy.Fixed)
+            layout.addItem(spacer)
+
         # 添加提交按钮
         submit_button = QPushButton("提交")
         submit_button.setFont(font)  # 设置按钮字体
@@ -82,6 +85,14 @@ class InputFormDialog(QDialog):
         layout.addWidget(submit_button)
 
         self.setLayout(layout)
+
+    def adjust_window_size(self):
+        base_width = 450
+        base_height = 100  # 基础高度，包含按钮和一些边距
+        field_height = 50  # 每个字段的大致高度（标签 + 输入框）
+        spacer_height = 10  # 间隔的高度
+        total_height = base_height + len(self.form_structure) * (field_height + spacer_height)
+        self.setFixedSize(base_width, total_height)
 
     def get_input_values(self):
         values = []

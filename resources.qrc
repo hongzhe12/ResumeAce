@@ -13,5 +13,10 @@
     <file>images/放大.svg</file>
     <file>images/助手.svg</file>
     <file>images/助手2.svg</file>
+    <file>images/月亮.svg</file>
+    <file>images/月亮.png</file>
+    <file>images/个人信息.svg</file>
+    <file>images/向下.svg</file>
+    <file>images/排行榜.svg</file>
   </qresource>
 </RCC>

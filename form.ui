@@ -23,175 +23,238 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>简历助手v1.6</string>
+   <string>简历助手v1.8</string>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">/* 主窗口样式 */
+   <string notr="true">/* 全局字体设置 */
+* {
+    font-family: &quot;Microsoft YaHei&quot;;
+    font-size: 14px;
+    color: #333333;
+}
+
+/* 窗口背景 */
 QWidget {
-    background-color: white; /* 主窗口背景颜色 */
-    color: #333333; /* 主窗口文字颜色 */
-	border-radius: 10px; /* 文本框圆角 */
+    background-color: white;
+	border-radius: 10px;
+}
+
+/* 按钮样式 */
+QPushButton {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+
+QPushButton:pressed {
+    background-color: #3d8b40;
 }
 
 /* 标签样式 */
 QLabel {
-    font-size: 14px; /* 标签文字大小 */
-    padding: 5px; /* 标签内边距 */
+    color: #333333;
+    font-size: 14px;
 }
 
 /* 文本框样式 */
 QLineEdit {
-    background-color: white; /* 文本框背景颜色 */
-    border: 1px solid #cccccc; /* 文本框边框 */
-    border-radius: 3px; /* 文本框圆角 */
-    padding: 5px; /* 文本框内边距 */
+    background-color: white;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
 }
 
 QLineEdit:focus {
-    border-color: #1296db; /* 文本框获得焦点时边框颜色 */
-    outline: none; /* 去除默认的焦点轮廓 */
-}
-QScrollBar:vertical
-{
-    width:8px;
-    background:rgb(0,0,0,0%);
-    margin:0px,0px,0px,0px;
-    padding-top:12px;   /*上预留位置*/
-    padding-bottom:12px;    /*下预留位置*/
-}
- 
-/*滚动条中滑块的样式*/
-QScrollBar::handle:vertical
-{
-    width:8px;
-    background:rgb(0,0,0,25%);
-    border-radius:4px;
-    min-height:20px;
-}
- 
-/*鼠标触及滑块样式*/
-QScrollBar::handle:vertical:hover
-{
-    width:9px;
-    background:rgb(0,0,0,50%);
-    border-radius:4px;
-    min-height:20;
-}
- 
-/*设置下箭头*/
-QScrollBar::add-line:vertical
-{
-    height:12px;
-    width:10px;
-    border-image:url(:/KeyManager/images/icon_pull-down.png);
-    subcontrol-position:bottom;
-}
- 
-/*设置上箭头*/
-QScrollBar::sub-line:vertical
-{
-    height:12px;
-    width:10px;
-    border-image:url(:/KeyManager/images/icon_pull-up.png);
-    subcontrol-position:top;
-}
- 
-/*设置下箭头:悬浮状态*/
-QScrollBar::add-line:vertical:hover
-{
-    height:12px;
-    width:10px;
-    border-image:url(:/KeyManager/images/icon_pull-down2.png);
-    subcontrol-position:bottom;
-}
- 
-/*设置上箭头：悬浮状态*/
-QScrollBar::sub-line:vertical:hover
-{
-    height:12px;
-    width:10px;
-    border-image:url(:/KeyManager/images/icon_pull-up2.png);
-    subcontrol-position:top;
-}
- 
-/*当滚动条滚动的时候，上面的部分和下面的部分*/
-QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical
-{
-    background:rgb(0,0,0,10%);
-    border-radius:4px;
+    border: 1px solid #4CAF50;
 }
 
-QScrollBar:horizontal
-{
-    height: 8px;  /* 设置滚动条高度 */
-    background: rgb(0, 0, 0, 0%);  /* 背景透明 */
-    margin: 0px;  /* 外边距 */
-    padding-left: 12px;  /* 左预留位置 */
-    padding-right: 12px;  /* 右预留位置 */
+/* 组合框样式 */
+QComboBox {
+    background-color: white;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
 }
 
-/* 滚动条中滑块的样式 */
-QScrollBar::handle:horizontal
-{
-    height: 8px;  /* 设置滑块高度 */
-    background: rgb(0, 0, 0, 25%);  /* 滑块背景颜色及透明度 */
-    border-radius: 4px;
-    min-width: 20px;  /* 最小宽度 */
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #cccccc;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
-/* 鼠标触及滑块样式 */
-QScrollBar::handle:horizontal:hover
-{
-    height: 9px;  /* 鼠标悬停时滑块高度变化 */
-    background: rgb(0, 0, 0, 50%);
-    border-radius: 4px;
+QComboBox::down-arrow {
+    image: url(:/icons/images/向下.svg);
+}
+
+/* 复选框样式 */
+QCheckBox {
+    color: #333333;
+    font-size: 14px;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    background-color: white;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+/* 单选框样式 */
+QRadioButton {
+    color: #333333;
+    font-size: 14px;
+}
+
+QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    background-color: white;
+}
+
+QRadioButton::indicator:checked {
+    background-color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+/* 滚动条样式 */
+QScrollBar:vertical {
+    background-color: #f0f0f0;
+    width: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #cccccc;
+    min-height: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    background: none;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    background-color: #f0f0f0;
+    height: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #cccccc;
     min-width: 20px;
+    border-radius: 6px;
 }
 
-/* 设置右箭头 */
-QScrollBar::add-line:horizontal
-{
-    width: 12px;
-    height: 10px;
-    border-image: url(:/KeyManager/images/icon_pull-right.png);  /* 对应右箭头图片，需确保资源路径正确 */
-    subcontrol-position: right;
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    background: none;
 }
 
-/* 设置左箭头 */
-QScrollBar::sub-line:horizontal
-{
-    width: 12px;
-    height: 10px;
-    border-image: url(:/KeyManager/images/icon_pull-left.png);  /* 对应左箭头图片 */
-    subcontrol-position: left;
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
 }
 
-/* 设置右箭头:悬浮状态 */
-QScrollBar::add-line:horizontal:hover
-{
-    width: 12px;
-    height: 10px;
-    border-image: url(:/KeyManager/images/icon_pull-right2.png);
-    subcontrol-position: right;
+/* 进度条样式 */
+QProgressBar {
+    background-color: #f0f0f0;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    text-align: center;
+    color: #333333;
 }
 
-/* 设置左箭头：悬浮状态 */
-QScrollBar::sub-line:horizontal:hover
-{
-    width: 12px;
-    height: 10px;
-    border-image: url(:/KeyManager/images/icon_pull-left2.png);
-    subcontrol-position: left;
+QProgressBar::chunk {
+    background-color: #4CAF50;
+    border-radius: 5px;
 }
 
-/* 当滚动条滚动的时候，左边的部分和右边的部分 */
-QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal
-{
-    background: rgb(0, 0, 0, 10%);
-    border-radius: 4px;
+/* 菜单栏样式 */
+QMenuBar {
+    background-color: #f0f0f0;
+    color: #333333;
+}
+
+QMenuBar::item {
+    background-color: transparent;
+    padding: 5px 10px;
+}
+
+QMenuBar::item:selected {
+    background-color: #4CAF50;
+    color: white;
+}
+
+QMenu {
+    background-color: #f0f0f0;
+    border: 1px solid #cccccc;
+    color: #333333;
+}
+
+QMenu::item {
+    padding: 5px 20px;
+}
+
+QMenu::item:selected {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* 工具栏样式 */
+QToolBar {
+    background-color: #f0f0f0;
+    border: none;
+}
+
+QToolButton {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+}
+
+QToolButton:hover {
+    background-color: #4CAF50;
+    border-radius: 5px;
+}
+
+QToolButton:pressed {
+    background-color: #3d8b40;
+    border-radius: 5px;
+}
+
+/* 状态栏样式 */
+QStatusBar {
+    background-color: #f0f0f0;
+    color: #333333;
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -276,6 +339,9 @@ QTextEdit QScrollBar::sub-page:vertical {
     background: none;
 }</string>
        </property>
+       <property name="placeholderText">
+        <string>请输入您的问题</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -306,7 +372,7 @@ QProgressBar::chunk {
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0">
        <item>
         <widget class="QPushButton" name="connect_button">
          <property name="minimumSize">
@@ -317,7 +383,8 @@ QProgressBar::chunk {
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <family>Microsoft YaHei</family>
+           <pointsize>-1</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -362,7 +429,8 @@ QPushButton:pressed {
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <family>Microsoft YaHei</family>
+           <pointsize>-1</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -407,7 +475,8 @@ QPushButton:pressed {
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <family>Microsoft YaHei</family>
+           <pointsize>-1</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -452,7 +521,8 @@ QPushButton:pressed {
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <family>Microsoft YaHei</family>
+           <pointsize>-1</pointsize>
           </font>
          </property>
          <property name="styleSheet">
@@ -488,6 +558,98 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="person_info">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Microsoft YaHei</family>
+           <pointsize>-1</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+QPushButton:pressed {
+    background-color: #c0c0c0;
+    border-radius: 5px;
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/images/个人信息.svg</normaloff>:/icons/images/个人信息.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="show_rank_btn">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Microsoft YaHei</family>
+           <pointsize>-1</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+QPushButton:pressed {
+    background-color: #c0c0c0;
+    border-radius: 5px;
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/images/排行榜.svg</normaloff>:/icons/images/排行榜.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="chat">
          <property name="minimumSize">
           <size>
@@ -497,7 +659,8 @@ QPushButton:pressed {
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <family>Microsoft YaHei</family>
+           <pointsize>-1</pointsize>
           </font>
          </property>
          <property name="styleSheet">

@@ -1,17 +1,23 @@
 # -*- encoding=utf8 -*-
 __author__ = "hongzhe"
 
+import json
 import logging
 import re
+import socket
+import sqlite3
 import subprocess
 import sys
+import webbrowser
 from datetime import datetime
 from typing import List, Union, Any
 
+import requests
 from PySide6.QtCore import QThread, QUrl, QSize, QTimer, QEvent
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QDesktopServices, QClipboard
+from PySide6.QtGui import QDesktopServices, QClipboard, QIcon
 from PySide6.QtGui import QPixmap
+from PySide6.QtSql import QSqlQuery, QSqlDatabase
 from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget, \
     QTextEdit, QDialog
 from PySide6.QtWidgets import QMessageBox
@@ -48,6 +54,9 @@ logger.addHandler(file_handler)
 # 任务队列
 task_queue = []
 
+global poco
+poco = None
+
 ADB_PATH = "adb"  # 开发环境
 
 # ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
@@ -70,6 +79,44 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #0a608e; /* 按钮按下时背景颜色 */
 }'''
+
+
+# 连接到 SQLite 数据库
+def create_connection():
+    db = QSqlDatabase.addDatabase('QSQLITE')
+    db.setDatabaseName('user_info.db')
+    if not db.open():
+        print("无法打开数据库")
+        return False
+    # 创建用户信息表（如果不存在）
+    query = QSqlQuery()
+    query.exec('''
+        CREATE TABLE IF NOT EXISTS user_info (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT
+        )
+    ''')
+    return True
+
+
+# 获取存储的用户名
+def get_stored_username():
+    query = QSqlQuery()
+    query.exec('SELECT username FROM user_info ORDER BY id DESC LIMIT 1')
+    if query.next():
+        return query.value(0)
+    return None
+
+
+# 保存用户名到数据库
+def save_username(username):
+    query = QSqlQuery()
+    query.prepare('INSERT INTO user_info (username) VALUES (:username)')
+    query.bindValue(':username', username)
+    if not query.exec():
+        print("保存用户名失败")
+
+
 from PySide6.QtCore import QObject, Signal
 
 
@@ -101,7 +148,7 @@ class ChatThread(QObject):
     # 定义信号
     result = Signal(str)
 
-    def __init__(self,message):
+    def __init__(self, message):
         super().__init__()
         self.message = message
 
@@ -118,9 +165,6 @@ class ChatThread(QObject):
         else:
             print("结果不是 LLMResult 类型")
             self.result.emit("不好意思，正在学习中...")
-
-
-
 
 
 import psutil
@@ -305,8 +349,6 @@ def task_job(job_key: List[str], job_key_2: str):
             file_path = f"{current_date}已投名单.csv"
             append_to_csv(file_path, [job_name, content, job_salary, location, boss_name],
                           header=["岗位名称", "工作内容", "薪水", "位置", "招聘者姓名"])
-
-
         else:
             logger.info(f"职位标题不符合筛选条件，跳过: {job_name}")
 
@@ -314,6 +356,59 @@ def task_job(job_key: List[str], job_key_2: str):
     else:
         logger.error("找不到控件，任务失败")  # 如果没有找到控件，任务失败
         raise Exception("找不到控件，任务失败")
+
+
+# 获取简历投递信息
+def get_resume_info():
+    poco(text="我的").click()
+    time.sleep(0.3)
+    contacts_number = poco('com.hpbr.bosszhipin:id/tv_geek_contacts_number').get_text()
+    post_resume_number = poco('com.hpbr.bosszhipin:id/tv_geek_post_resume_number').get_text()
+    interview_count = poco('com.hpbr.bosszhipin:id/tv_interview_count').get_text()
+    return contacts_number, post_resume_number, interview_count
+
+
+# 更新用户数据到排行榜
+def push_resume_rank():
+    # api域名
+    BASE_URL = 'http://47.113.186.186'
+    # 用户昵称
+    # 连接到 SQLite 数据库
+    create_connection()
+    username = get_stored_username()
+
+    if username is None:
+        username = socket.gethostname()
+    # 沟通数量、已投简历、待面试
+    contacts_number, post_resume_number, interview_count = get_resume_info()
+    # 头像
+    avatar = 'static/images/t1.jpg'
+    # 趋势
+    trend = 0
+
+    # 更新用户数据
+    update_url = f'{BASE_URL}/api/user/{username}/update'
+    update_data = {
+        "chat_count": contacts_number,
+        "resume_count": post_resume_number,
+        "interview_count": interview_count
+    }
+    try:
+        update_response = requests.put(update_url, json=update_data)
+        update_response.raise_for_status()  # 检查请求是否成功
+        print("\n更新用户数据:")
+        print(json.dumps(update_response.json(), ensure_ascii=False, indent=2))
+
+        # 刷新榜单
+        refresh_url = f'{BASE_URL}/api/rankings/refresh'
+        refresh_response = requests.post(refresh_url)
+        refresh_response.raise_for_status()  # 检查请求是否成功
+        print("\n刷新榜单:")
+        print(json.dumps(refresh_response.json(), ensure_ascii=False, indent=2))
+    except requests.RequestException as e:
+        print(f"请求出错: {e}")
+    except ValueError:
+        print("响应数据不是有效的JSON格式")
 
 
 class LogDisplayWindow(QWidget):
@@ -377,6 +472,28 @@ class TaskWorker(QThread):
             self.progress_updated.emit((i + 1) * 100 // self.num_tasks)
 
 
+class RankWorker(QThread):
+    """后台任务线程类，用于处理任务队列"""
+    task_completed = Signal(bool)  # 任务完成信号
+
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        global poco
+        if check_android_connection():
+            print("连接正常！")
+            auto_setup(__file__)  # 初始化Poco
+            poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
+
+        # 非阻塞执行ADB命令
+        start_app("com.hpbr.bosszhipin")
+        time.sleep(0.5)
+        # 更新排行榜
+        push_resume_rank()
+        self.task_completed.emit(True)
+
+
 class EnterKeyFilter(QObject):
     def __init__(self, target, callback):
         super().__init__()
@@ -393,19 +510,19 @@ class EnterKeyFilter(QObject):
         # 其他事件正常处理
         return super().eventFilter(obj, event)
 
+
 class MyWidget(ElWindow):
     def __init__(self):
         super().__init__()
 
         # 创建 UI 类的实例
+        self.rw = None
         self.chat = None
         self.num_tasks = None
         self.is_chat_show = False
         self.ui = Ui_Form()
 
         self.ui.setupUi(self)  # 设置 UI 布局
-
-
 
         # 创建菜单
         self.open_log_button = QPushButton()
@@ -423,8 +540,6 @@ class MyWidget(ElWindow):
         self.show_path = QPushButton()
         self.show_path.setMinimumSize(QSize(0, 40))
         self.show_path.setText("获取更新路径")
-
-
 
         self.open_log_button.setStyleSheet(btn_style)
         self.add_group.setStyleSheet(btn_style)
@@ -453,7 +568,6 @@ class MyWidget(ElWindow):
         self.open_csv.clicked.connect(self.open_excel_file)
         self.show_path.clicked.connect(self.start_update)
 
-
         # 创建一个 QTimer 对象
         self.timer = QTimer(self)
         # 设置定时器每 3 秒触发一次
@@ -463,7 +577,6 @@ class MyWidget(ElWindow):
         # 获取布局对象
         layout = self.ui.verticalLayout
         self.cb = ChatBox()
-
 
         # 将 ChatBox 实例添加到布局的最上面
         self.ui.verticalLayout.removeWidget(self.ui.label_2)
@@ -494,10 +607,70 @@ class MyWidget(ElWindow):
         # 使用 raise_() 方法将 drawer_menu 提升到前面的层级
         self.drawer_menu.raise_()
 
+        # 个人信息信号槽
+        self.ui.person_info.clicked.connect(self.show_person_info_edit)
+        # 排行榜信号槽
+        self.ui.show_rank_btn.clicked.connect(self.show_rank)
 
+    def show_rank(self):
+        # 打开网站
+        webbrowser.open("http://47.113.186.186/")
+
+    def update_rank(self):
+        # 弹窗确认
+        reply = QMessageBox.information(self, "提示", "确认更新排行榜吗？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.No:
+            return
+
+        # 检查线程是否存在且正在运行
+        if self.thread and self.thread.isRunning():
+            self.thread.quit()
+            self.thread.wait()
+
+        # 发送消息
+        self.cb.send_message(False, "正在查找app位置...")
+
+        # 创建工作线程和工作对象
+        self.rw = RankWorker()
+        self.thread = QThread()
+
+        # 将工作对象移动到线程中
+        self.rw.moveToThread(self.thread)
+
+        # 连接信号和槽
+        self.thread.started.connect(self.rw.run)
+        self.rw.task_completed.connect(self.update_rank_completed)
+
+        # 启动线程
+        self.thread.start()
+
+    def update_rank_completed(self):
+        self.cb.send_message(False, "成功更新排行榜！")
+
+    # 个人信息槽函数
+    def show_person_info_edit(self):
+        # 连接到 SQLite 数据库
+        create_connection()
+        username = get_stored_username()
+
+        import socket
+
+        # 获取计算机名称
+        computer_name = socket.gethostname()
+
+        form_structure = [
+            {"label": "姓名（用于排行榜）", "type": "text", "default": username if username else computer_name},
+        ]
+        dialog = InputFormDialog(form_structure, self)
+        if dialog.exec() == QDialog.Accepted:
+            values = dialog.get_input_values()
+            new_name = values[0]
+            save_username(new_name)
+
+        self.update_rank()
 
     # 隐藏布局控件
-    def hide_all_widgets(self,layout):
+    def hide_all_widgets(self, layout):
         # 遍历水平布局中的所有组件
         for i in range(layout.count()):
             item = layout.itemAt(i)
@@ -513,12 +686,10 @@ class MyWidget(ElWindow):
         # 发送消息到聊天框
         self.cb.send_message(True, message)
 
-
         # 检查线程是否存在且正在运行
         if self.thread and self.thread.isRunning():
             self.thread.quit()
             self.thread.wait()
-
 
         # 创建工作线程和工作对象
         self.chat = ChatThread(message)
@@ -538,7 +709,7 @@ class MyWidget(ElWindow):
         # 启动线程
         self.thread.start()
 
-    def receive_chat(self,content):
+    def receive_chat(self, content):
 
         self.cb.send_message(False, content)
 
@@ -557,8 +728,6 @@ class MyWidget(ElWindow):
             self.ui.textEdit.hide()
 
             self.is_chat_show = False
-
-
 
     def start_update(self):
         # 显示文件所在路径
@@ -591,13 +760,8 @@ class MyWidget(ElWindow):
                 [ADB_PATH, 'connect', ipaddress],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
-            self.ui.statusbar.showMessage(result.stdout)
-
-
-
 
     def on_timeout(self):
-
 
         # 每次定时器触发时更新标签内容
         if check_android_connection():
@@ -622,7 +786,6 @@ class MyWidget(ElWindow):
             # 连接信号和槽
             self.thread.started.connect(self.wk.run)
             self.wk.is_finish.connect(lambda res: print("打开成功") if res else print("打开失败"))
-
 
             # 启动线程
             self.thread.start()
@@ -771,7 +934,17 @@ if __name__ == "__main__":
     # 调试：C:\Users\hongz\Downloads\简历助手\python-embed\python.exe C:\Users\hongz\Downloads\简历助手\src\main.py
     # 通过 Get-ChildItem 命令获取当前目录下所有 .py 文件，再使用 ForEach-Object 对每个文件执行 pyarmor gen 命令
     # Get-ChildItem -Filter *.py | ForEach-Object { pyarmor gen $_.FullName }
+
+    try:
+        from ctypes import windll  # Only exists on Windows.
+
+        myappid = 'mycompany.myproduct.subproduct.version'
+        windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    except ImportError:
+        pass
+
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon('images/月亮.png'))
     if show_disclaimer():
         window = MyWidget()
         window.show()

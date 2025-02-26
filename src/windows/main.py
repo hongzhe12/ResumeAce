@@ -28,6 +28,7 @@ from sparkai.llm.llm import ChunkPrintHandler
 
 from src.api import get_xinghuo_response
 from src.core import ChatBox, ElWindow, DrawerMenu, InputFormDialog,ElTitleBar
+from src.model.filter_definition import FilterDefinition, PhoneInfo
 from ui_form import Ui_Form
 
 
@@ -742,16 +743,35 @@ class MyWidget(ElWindow):
         os.startfile(file_path)
 
     def connect_phone(self):
-        # 自定义数据结构，用于描述表单字段
-        form_structure = [
-            {"label": "IP地址和端口", "type": "text"},
-        ]
+
+        PhoneInfo.create_table()
+        # 查询数据
+        ph:PhoneInfo = PhoneInfo.select_by_id(1)
+        if not ph:
+            form_structure = [
+                {"label": "IP地址和端口", "type": "text"},
+            ]
+        else:
+            form_structure = [
+                {"label": "IP地址和端口", "type": "text", "default": ph.ip},
+            ]
+
+
+
         dialog = InputFormDialog(form_structure, self)
         if dialog.exec() == QDialog.Accepted:
             values = dialog.get_input_values()
 
             # 获取用户输入的IP
             ipaddress = values[0]
+
+            # 查询数据
+            first_ph = PhoneInfo.select_by_id(1)
+            if first_ph:
+                res = PhoneInfo.update(id = 1,ip = ipaddress)
+            else:
+                res = PhoneInfo.insert(ip = ipaddress,id = 1)
+
 
             result = subprocess.run(
                 [ADB_PATH, 'connect', ipaddress],
@@ -839,16 +859,25 @@ class MyWidget(ElWindow):
 
     def add_task(self):
         """向队列添加任务"""
-        # filter_text = self.ui.filter_input.text()
-        # filter_text_2 = self.ui.filter_input_2.text()
-        # num_tasks = self.ui.num_tasks_input.value()
+        # 创建表
+        FilterDefinition.create_table()
 
-        # 自定义数据结构，用于描述表单字段
-        form_structure = [
-            {"label": "筛选标题(多个关键词空格隔开)", "type": "text"},
-            {"label": "筛选薪水(例如5000-10000)", "type": "text", "default": "5000-10000"},
-            {"label": "任务数量", "type": "spinbox", "default": 100},
-        ]
+        filter_form = FilterDefinition.select_by_id(1)
+
+
+        if filter_form:
+            form_structure = [
+                {"label": "筛选标题(多个关键词空格隔开)", "type": "text", "default": filter_form.title},
+                {"label": "筛选薪水(例如5000-10000)", "type": "text", "default": filter_form.salary},
+                {"label": "任务数量", "type": "spinbox", "default": int(filter_form.number)},
+            ]
+        else:
+            form_structure = [
+                {"label": "筛选标题(多个关键词空格隔开)", "type": "text"},
+                {"label": "筛选薪水(例如5000-10000)", "type": "text", "default": "5000-10000"},
+                {"label": "任务数量", "type": "spinbox", "default": 100},
+            ]
+
         dialog = InputFormDialog(form_structure, self)
         if dialog.exec() == QDialog.Accepted:
             values = dialog.get_input_values()
@@ -858,6 +887,13 @@ class MyWidget(ElWindow):
             filter_text_2 = values[1]
             # 任务数量
             self.num_tasks = values[2]
+
+            # 插入数据
+            if filter_form:
+                FilterDefinition.update(id= 1,title = filter_text,salary = filter_text_2,number = self.num_tasks)
+            else:
+                FilterDefinition.insert(title = filter_text,salary = filter_text_2,number = self.num_tasks)
+
 
             job_key = filter_text.split(" ") if filter_text else []
             job_key_2 = filter_text_2 if filter_text_2 else None

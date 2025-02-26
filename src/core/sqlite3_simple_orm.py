@@ -21,7 +21,7 @@ class Column:
 
 
 class Model(metaclass=ModelMeta):
-    _connection = sqlite3.connect('test.db')
+    _connection = sqlite3.connect('../db/sqlite3.db')
     _cursor = _connection.cursor()
 
     @classmethod
@@ -59,6 +59,28 @@ class Model(metaclass=ModelMeta):
                 setattr(obj, col_name, value)
             result.append(obj)
         return result
+
+    @classmethod
+    def select_by_id(cls, id):
+        select_sql = f"SELECT * FROM {cls.__table__} WHERE id = ?"
+        cls._cursor.execute(select_sql, (id,))
+        row = cls._cursor.fetchone()
+        if row:
+            obj = cls()
+            column_names = [desc[0] for desc in cls._cursor.description]
+            for col_name, value in zip(column_names, row):
+                setattr(obj, col_name, value)
+            return obj
+        return None
+
+    @classmethod
+    def update(cls, id, **kwargs):
+        set_clause = ', '.join([f"{col} = ?" for col in kwargs.keys()])
+        values = tuple(kwargs.values()) + (id,)
+        update_sql = f"UPDATE {cls.__table__} SET {set_clause} WHERE id = ?"
+        cls._cursor.execute(update_sql, values)
+        cls._connection.commit()
+        return cls._cursor.rowcount
 
     @classmethod
     def close_connection(cls):

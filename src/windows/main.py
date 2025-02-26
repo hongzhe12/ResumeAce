@@ -5,7 +5,6 @@ import json
 import logging
 import re
 import socket
-import sqlite3
 import subprocess
 import sys
 import webbrowser
@@ -27,16 +26,13 @@ from poco.proxy import UIObjectProxy
 from sparkai.core.outputs import LLMResult
 from sparkai.llm.llm import ChunkPrintHandler
 
-from chat_box import ChatBox
-from drawermenu import DrawerMenu
-from eltitlebar import ElTitleBar
-from elwindow import ElWindow
-from inputformdialog import InputFormDialog
+from src.api import get_xinghuo_response
+from src.core import ChatBox, ElWindow, DrawerMenu, InputFormDialog,ElTitleBar
 from ui_form import Ui_Form
-from xinghuo import *
+
 
 # 配置日志输出到文件
-log_file = "task_log.txt"
+log_file = "../../log/task_log.txt"
 logger = logging.getLogger("airtest")
 logger.setLevel(logging.DEBUG)  # 设置日志级别为 DEBUG
 
@@ -84,7 +80,8 @@ QPushButton:pressed {
 # 连接到 SQLite 数据库
 def create_connection():
     db = QSqlDatabase.addDatabase('QSQLITE')
-    db.setDatabaseName('user_info.db')
+    db_path = "../db/user_info.db"
+    db.setDatabaseName(db_path)
     if not db.open():
         print("无法打开数据库")
         return False
@@ -944,7 +941,7 @@ if __name__ == "__main__":
         pass
 
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon('images/月亮.png'))
+    app.setWindowIcon(QIcon("../../resources/images/月亮.png"))
     if show_disclaimer():
         window = MyWidget()
         window.show()

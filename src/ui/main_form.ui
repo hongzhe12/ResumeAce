@@ -409,7 +409,7 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/连接.svg</normaloff>:/icons/images/连接.svg</iconset>
+           <normaloff>:/icons/resources/images/连接.svg</normaloff>:/icons/resources/images/连接.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -455,7 +455,7 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/筛选.svg</normaloff>:/icons/images/筛选.svg</iconset>
+           <normaloff>:/icons/resources/images/筛选.svg</normaloff>:/icons/resources/images/筛选.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -501,7 +501,7 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/开始.svg</normaloff>:/icons/images/开始.svg</iconset>
+           <normaloff>:/icons/resources/images/开始.svg</normaloff>:/icons/resources/images/开始.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -547,7 +547,7 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/停止.svg</normaloff>:/icons/images/停止.svg</iconset>
+           <normaloff>:/icons/resources/images/停止.svg</normaloff>:/icons/resources/images/停止.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -593,7 +593,7 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/个人信息.svg</normaloff>:/icons/images/个人信息.svg</iconset>
+           <normaloff>:/icons/resources/images/个人信息.svg</normaloff>:/icons/resources/images/个人信息.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -639,7 +639,7 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/排行榜.svg</normaloff>:/icons/images/排行榜.svg</iconset>
+           <normaloff>:/icons/resources/images/排行榜.svg</normaloff>:/icons/resources/images/排行榜.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -685,7 +685,7 @@ QPushButton:pressed {
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/人工智能.svg</normaloff>:/icons/images/人工智能.svg</iconset>
+           <normaloff>:/icons/resources/images/人工智能.svg</normaloff>:/icons/resources/images/人工智能.svg</iconset>
          </property>
          <property name="iconSize">
           <size>

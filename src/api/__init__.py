@@ -1,0 +1,1 @@
+from .xing_huo_api import get_xinghuo_response

@@ -4,7 +4,7 @@ from PySide6.QtGui import QFont, QFontMetrics
 from PySide6.QtCore import Qt, QTimer
 
 # 假设 ui_chat_box 模块和 Ui_ChatBox 类已经定义好
-from ui_chat_box import Ui_ChatBox
+from .ui_chat_box import Ui_ChatBox
 
 
 class ChatBox(QWidget):

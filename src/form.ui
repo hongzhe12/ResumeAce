@@ -255,7 +255,84 @@ QToolButton:pressed {
 QStatusBar {
     background-color: #f0f0f0;
     color: #333333;
-}</string>
+}
+
+
+/* 全局设置 QSpinBox 的样式 */
+QSpinBox {
+    /* 背景颜色 */
+    background-color: #f0f0f0;
+    /* 文本颜色 */
+    color: #333;
+    /* 边框样式，2px 宽的圆角边框 */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    /* 内边距 */
+    padding: 5px;
+    /* 字体设置 */
+    font-size: 14px;
+}
+
+/* 鼠标悬停在 QSpinBox 上时的样式 */
+QSpinBox:hover {
+    /* 边框颜色改变 */
+    border-color: #999;
+}
+
+/* QSpinBox 获取焦点时的样式 */
+QSpinBox:focus {
+    /* 边框颜色改变 */
+    border-color: #0078d7;
+    /* 背景颜色改变 */
+    background-color: #fff;
+}
+
+/* 设置 QSpinBox 上下箭头按钮的样式 */
+QSpinBox::up-button,
+QSpinBox::down-button {
+    /* 背景颜色 */
+    background-color: #e0e0e0;
+    /* 宽度 */
+    width: 20px;
+    /* 边框样式 */
+    border: none;
+}
+
+/* 鼠标悬停在上下箭头按钮上时的样式 */
+QSpinBox::up-button:hover,
+QSpinBox::down-button:hover {
+    /* 背景颜色改变 */
+    background-color: #ccc;
+}
+
+/* 设置上箭头按钮的样式 */
+QSpinBox::up-arrow {
+    /* 箭头图片 */
+    image:url(:/icons/resources/images/向上.svg);
+    /* 箭头大小 */
+    width: 10px;
+    height: 10px;
+}
+
+/* 设置下箭头按钮的样式 */
+QSpinBox::down-arrow {
+    /* 箭头图片 */
+    image: url(:/icons/resources/images/向下.svg);
+    /* 箭头大小 */
+    width: 10px;
+    height: 10px;
+}
+
+/* 禁用状态下的 QSpinBox 样式 */
+QSpinBox:disabled {
+    /* 背景颜色 */
+    background-color: #eee;
+    /* 文本颜色 */
+    color: #999;
+    /* 边框颜色 */
+    border-color: #ddd;
+}
+</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

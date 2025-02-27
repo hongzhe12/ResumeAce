@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QFrame, QVBoxLayout, QPushButton, QWidget, QSizePolicy
 from PySide6.QtCore import QPropertyAnimation, QEasingCurve, QRect, QSize
 from PySide6.QtGui import QIcon
-import resources_rc
+
+
 
 
 class DrawerMenu(QFrame):

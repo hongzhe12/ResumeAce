@@ -3,6 +3,7 @@ __author__ = "hongzhe"
 
 import json
 import logging
+import os.path
 import re
 import socket
 import subprocess
@@ -28,12 +29,13 @@ from sparkai.llm.llm import ChunkPrintHandler
 
 from src.api import get_xinghuo_response
 from src.core import ChatBox, ElWindow, DrawerMenu, InputFormDialog,ElTitleBar
-from src.model.filter_definition import FilterDefinition, PhoneInfo
+from src.model.some_form import FilterDefinition, PhoneInfo
+
 from ui_form import Ui_Form
 
 
 # 配置日志输出到文件
-log_file = "../../log/task_log.txt"
+log_file = "../log/task_log.txt"
 logger = logging.getLogger("airtest")
 logger.setLevel(logging.DEBUG)  # 设置日志级别为 DEBUG
 
@@ -81,7 +83,7 @@ QPushButton:pressed {
 # 连接到 SQLite 数据库
 def create_connection():
     db = QSqlDatabase.addDatabase('QSQLITE')
-    db_path = "../db/user_info.db"
+    db_path = "./db/user_info.db"
     db.setDatabaseName(db_path)
     if not db.open():
         print("无法打开数据库")
@@ -533,7 +535,7 @@ class MyWidget(ElWindow):
 
         self.open_csv = QPushButton()
         self.open_csv.setMinimumSize(QSize(0, 40))
-        self.open_csv.setText("打开文件")
+        self.open_csv.setText("今日投递")
 
         self.show_path = QPushButton()
         self.show_path.setMinimumSize(QSize(0, 40))
@@ -545,14 +547,14 @@ class MyWidget(ElWindow):
         self.show_path.setStyleSheet(btn_style)
 
         # 创建抽屉式菜单
-        self.drawer_menu = DrawerMenu(self)
+        self.drawer_menu = DrawerMenu(parent=self,button_icon_path = ":/icons/resources/images/菜单.svg")
 
         # 向侧边栏添加按钮
-
         self.drawer_menu.add_widget(self.open_log_button)
         self.drawer_menu.add_widget(self.add_group)
         self.drawer_menu.add_widget(self.open_csv)
         self.drawer_menu.add_widget(self.show_path)
+
 
         # 连接信号和槽
         self.ui.add_task_button.clicked.connect(self.add_task)
@@ -609,6 +611,10 @@ class MyWidget(ElWindow):
         self.ui.person_info.clicked.connect(self.show_person_info_edit)
         # 排行榜信号槽
         self.ui.show_rank_btn.clicked.connect(self.show_rank)
+
+
+
+
 
     def show_rank(self):
         # 打开网站
@@ -736,11 +742,16 @@ class MyWidget(ElWindow):
         QMessageBox.information(self, "复制成功", "路径已复制到剪贴板")
 
     def open_excel_file(self):
+        # 获取桌面路径
+        desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+        csv_folder = os.path.join(desktop_path, "简历投递数据")
+
         # 获取当前日期
         current_date = datetime.now().strftime("%Y-%m-%d")
         # 生成文件名
         file_path = f"{current_date}已投名单.csv"
-        os.startfile(file_path)
+        full_file_path = os.path.join(csv_folder, file_path)
+        os.startfile(full_file_path)
 
     def connect_phone(self):
 
@@ -783,12 +794,6 @@ class MyWidget(ElWindow):
         # 每次定时器触发时更新标签内容
         if check_android_connection():
             # 加载图像
-            # pixmap = QPixmap(":/icons/images/正常.png")
-            # pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
-            # self.ui.label.setPixmap(pixmap)
-            # self.ui.label.setFixedSize(16, 16)
-            # self.ui.label.setAlignment(Qt.AlignCenter)
-
             # 检查线程是否存在且正在运行
             if self.thread and self.thread.isRunning():
                 return
@@ -811,11 +816,6 @@ class MyWidget(ElWindow):
             # 加载图像
             pixmap = QPixmap(":/icons/images/err.png")
             pixmap = pixmap.scaled(16, 16, Qt.AspectRatioMode.KeepAspectRatio)
-            # self.ui.label.setPixmap(pixmap)
-            # self.ui.label.setFixedSize(16, 16)
-            # self.ui.label.setAlignment(Qt.AlignCenter)
-
-        # self.ui.label.update()  # 或使用 repaint()
 
     def check_connection(self):
         """检查Android设备连接状态"""
@@ -868,14 +868,14 @@ class MyWidget(ElWindow):
         if filter_form:
             form_structure = [
                 {"label": "筛选标题(多个关键词空格隔开)", "type": "text", "default": filter_form.title},
-                {"label": "筛选薪水(例如5000-10000)", "type": "text", "default": filter_form.salary},
-                {"label": "任务数量", "type": "spinbox", "default": int(filter_form.number)},
+                {"label": "筛选薪水(例如5000-10000，不要带单位)", "type": "text", "default": filter_form.salary},
+                {"label": "简历投递任务数量", "type": "spinbox", "default": int(filter_form.number)},
             ]
         else:
             form_structure = [
                 {"label": "筛选标题(多个关键词空格隔开)", "type": "text"},
-                {"label": "筛选薪水(例如5000-10000)", "type": "text", "default": "5000-10000"},
-                {"label": "任务数量", "type": "spinbox", "default": 100},
+                {"label": "筛选薪水(例如5000-10000，不要带单位)", "type": "text", "default": "5000-10000"},
+                {"label": "简历投递任务数量", "type": "spinbox", "default": 100},
             ]
 
         dialog = InputFormDialog(form_structure, self)
@@ -977,7 +977,7 @@ if __name__ == "__main__":
         pass
 
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("../../resources/images/月亮.png"))
+    app.setWindowIcon(QIcon("../resources/images/月亮.png"))
     if show_disclaimer():
         window = MyWidget()
         window.show()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_form.ui'
+## Form generated from reading UI file 'form.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.2
 ##
@@ -258,7 +258,87 @@ class Ui_Form(object):
 "QStatusBar {\n"
 "    background-color: #f0f0f0;\n"
 "    color: #333333;\n"
-"}")
+"}\n"
+"\n"
+"\n"
+"/* \u5168\u5c40\u8bbe\u7f6e QSpinBox \u7684\u6837\u5f0f */\n"
+"QSpinBox {\n"
+"    /* \u80cc\u666f\u989c\u8272 */\n"
+"    background-color: #f0f0f0;\n"
+"    /* \u6587\u672c\u989c\u8272 */\n"
+"    color: #333;\n"
+"    /* \u8fb9\u6846\u6837"
+                        "\u5f0f\uff0c2px \u5bbd\u7684\u5706\u89d2\u8fb9\u6846 */\n"
+"    border: 2px solid #ccc;\n"
+"    border-radius: 5px;\n"
+"    /* \u5185\u8fb9\u8ddd */\n"
+"    padding: 5px;\n"
+"    /* \u5b57\u4f53\u8bbe\u7f6e */\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"/* \u9f20\u6807\u60ac\u505c\u5728 QSpinBox \u4e0a\u65f6\u7684\u6837\u5f0f */\n"
+"QSpinBox:hover {\n"
+"    /* \u8fb9\u6846\u989c\u8272\u6539\u53d8 */\n"
+"    border-color: #999;\n"
+"}\n"
+"\n"
+"/* QSpinBox \u83b7\u53d6\u7126\u70b9\u65f6\u7684\u6837\u5f0f */\n"
+"QSpinBox:focus {\n"
+"    /* \u8fb9\u6846\u989c\u8272\u6539\u53d8 */\n"
+"    border-color: #0078d7;\n"
+"    /* \u80cc\u666f\u989c\u8272\u6539\u53d8 */\n"
+"    background-color: #fff;\n"
+"}\n"
+"\n"
+"/* \u8bbe\u7f6e QSpinBox \u4e0a\u4e0b\u7bad\u5934\u6309\u94ae\u7684\u6837\u5f0f */\n"
+"QSpinBox::up-button,\n"
+"QSpinBox::down-button {\n"
+"    /* \u80cc\u666f\u989c\u8272 */\n"
+"    background-color: #e0e0e0;\n"
+"    /* \u5bbd\u5ea6 */\n"
+"    width: 20px;\n"
+"    /* \u8fb9\u6846\u6837\u5f0f */\n"
+"    border: none;"
+                        "\n"
+"}\n"
+"\n"
+"/* \u9f20\u6807\u60ac\u505c\u5728\u4e0a\u4e0b\u7bad\u5934\u6309\u94ae\u4e0a\u65f6\u7684\u6837\u5f0f */\n"
+"QSpinBox::up-button:hover,\n"
+"QSpinBox::down-button:hover {\n"
+"    /* \u80cc\u666f\u989c\u8272\u6539\u53d8 */\n"
+"    background-color: #ccc;\n"
+"}\n"
+"\n"
+"/* \u8bbe\u7f6e\u4e0a\u7bad\u5934\u6309\u94ae\u7684\u6837\u5f0f */\n"
+"QSpinBox::up-arrow {\n"
+"    /* \u7bad\u5934\u56fe\u7247 */\n"
+"    image:url(:/icons/resources/images/\u5411\u4e0a.svg);\n"
+"    /* \u7bad\u5934\u5927\u5c0f */\n"
+"    width: 10px;\n"
+"    height: 10px;\n"
+"}\n"
+"\n"
+"/* \u8bbe\u7f6e\u4e0b\u7bad\u5934\u6309\u94ae\u7684\u6837\u5f0f */\n"
+"QSpinBox::down-arrow {\n"
+"    /* \u7bad\u5934\u56fe\u7247 */\n"
+"    image: url(:/icons/resources/images/\u5411\u4e0b.svg);\n"
+"    /* \u7bad\u5934\u5927\u5c0f */\n"
+"    width: 10px;\n"
+"    height: 10px;\n"
+"}\n"
+"\n"
+"/* \u7981\u7528\u72b6\u6001\u4e0b\u7684 QSpinBox \u6837\u5f0f */\n"
+"QSpinBox:disabled {\n"
+"    /* \u80cc\u666f\u989c\u8272 */\n"
+"    background-color: #eee;\n"
+""
+                        "    /* \u6587\u672c\u989c\u8272 */\n"
+"    color: #999;\n"
+"    /* \u8fb9\u6846\u989c\u8272 */\n"
+"    border-color: #ddd;\n"
+"}\n"
+"")
         self.gridLayout = QGridLayout(Form)
         self.gridLayout.setObjectName(u"gridLayout")
         self.verticalLayout = QVBoxLayout()
@@ -386,7 +466,7 @@ class Ui_Form(object):
 "    border-radius: 5px;\n"
 "}")
         icon = QIcon()
-        icon.addFile(u":/icons/images/\u8fde\u63a5.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/icons/resources/images/\u8fde\u63a5.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.connect_button.setIcon(icon)
         self.connect_button.setIconSize(QSize(32, 32))
 
@@ -412,7 +492,7 @@ class Ui_Form(object):
 "    border-radius: 5px;\n"
 "}")
         icon1 = QIcon()
-        icon1.addFile(u":/icons/images/\u7b5b\u9009.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/icons/resources/images/\u7b5b\u9009.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.add_task_button.setIcon(icon1)
         self.add_task_button.setIconSize(QSize(32, 32))
 
@@ -438,7 +518,7 @@ class Ui_Form(object):
 "    border-radius: 5px;\n"
 "}")
         icon2 = QIcon()
-        icon2.addFile(u":/icons/images/\u5f00\u59cb.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/icons/resources/images/\u5f00\u59cb.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.start_button.setIcon(icon2)
         self.start_button.setIconSize(QSize(32, 32))
 
@@ -464,7 +544,7 @@ class Ui_Form(object):
 "    border-radius: 5px;\n"
 "}")
         icon3 = QIcon()
-        icon3.addFile(u":/icons/images/\u505c\u6b62.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u":/icons/resources/images/\u505c\u6b62.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.stop_button.setIcon(icon3)
         self.stop_button.setIconSize(QSize(32, 32))
 
@@ -490,7 +570,7 @@ class Ui_Form(object):
 "    border-radius: 5px;\n"
 "}")
         icon4 = QIcon()
-        icon4.addFile(u":/icons/images/\u4e2a\u4eba\u4fe1\u606f.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon4.addFile(u":/icons/resources/images/\u4e2a\u4eba\u4fe1\u606f.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.person_info.setIcon(icon4)
         self.person_info.setIconSize(QSize(32, 32))
 
@@ -516,7 +596,7 @@ class Ui_Form(object):
 "    border-radius: 5px;\n"
 "}")
         icon5 = QIcon()
-        icon5.addFile(u":/icons/images/\u6392\u884c\u699c.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon5.addFile(u":/icons/resources/images/\u6392\u884c\u699c.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.show_rank_btn.setIcon(icon5)
         self.show_rank_btn.setIconSize(QSize(32, 32))
 
@@ -542,7 +622,7 @@ class Ui_Form(object):
 "    border-radius: 5px;\n"
 "}")
         icon6 = QIcon()
-        icon6.addFile(u":/icons/images/\u4eba\u5de5\u667a\u80fd.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon6.addFile(u":/icons/resources/images/\u4eba\u5de5\u667a\u80fd.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.chat.setIcon(icon6)
         self.chat.setIconSize(QSize(32, 32))
 

@@ -64,7 +64,7 @@ class InputFormDialog(QDialog):
                     input_widget.setDate(QDate.currentDate())  # 设置默认日期为当前日期
             elif field["type"] == "spinbox":
                 input_widget = QSpinBox()
-                input_widget.setRange(0, 120)  # 设置年龄范围，可按需调整
+                input_widget.setRange(0, 999)  # 设置年龄范围，可按需调整
                 if "default" in field:
                     input_widget.setValue(field["default"])
             else:

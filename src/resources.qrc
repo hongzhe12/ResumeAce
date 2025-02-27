@@ -1,0 +1,25 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file>../resources/images/菜单.svg</file>
+    <file>../resources/images/筛选.svg</file>
+    <file>../resources/images/开始.svg</file>
+    <file>../resources/images/连接.svg</file>
+    <file>../resources/images/停止.svg</file>
+    <file>../resources/images/错误.svg</file>
+    <file>../resources/images/正常.svg</file>
+    <file>../resources/images/人工智能.svg</file>
+    <file>../resources/images/最小化.svg</file>
+    <file>../resources/images/关闭.svg</file>
+    <file>../resources/images/放大.svg</file>
+    <file>../resources/images/助手.svg</file>
+    <file>../resources/images/助手2.svg</file>
+    <file>../resources/images/月亮.svg</file>
+    <file>../resources/images/月亮.png</file>
+    <file>../resources/images/个人信息.svg</file>
+    <file>../resources/images/向下.svg</file>
+    <file>../resources/images/向上.svg</file>
+    <file>../resources/images/排行榜.svg</file>
+  </qresource>
+</RCC>
+
+

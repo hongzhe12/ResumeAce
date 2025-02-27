@@ -21,7 +21,7 @@ class Column:
 
 
 class Model(metaclass=ModelMeta):
-    _connection = sqlite3.connect('./db/sqlite3.db')
+    _connection = sqlite3.connect('sqlite3.db')
     _cursor = _connection.cursor()
 
     @classmethod

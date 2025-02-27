@@ -27,15 +27,20 @@ from poco.proxy import UIObjectProxy
 from sparkai.core.outputs import LLMResult
 from sparkai.llm.llm import ChunkPrintHandler
 
-from src.api import get_xinghuo_response
-from src.core import ChatBox, ElWindow, DrawerMenu, InputFormDialog,ElTitleBar
-from src.model.some_form import FilterDefinition, PhoneInfo
+from base_window import ElWindow
+from chat_window import ChatBox
+from drawer_menu import DrawerMenu
+from input_form_dialog import InputFormDialog
+from some_form import PhoneInfo, FilterDefinition
+from title_bar import ElTitleBar
+from xing_huo_api import  get_xinghuo_response
+
 
 from ui_form import Ui_Form
 
 
 # 配置日志输出到文件
-log_file = "../log/task_log.txt"
+log_file = "task_log.txt"
 logger = logging.getLogger("airtest")
 logger.setLevel(logging.DEBUG)  # 设置日志级别为 DEBUG
 
@@ -83,7 +88,7 @@ QPushButton:pressed {
 # 连接到 SQLite 数据库
 def create_connection():
     db = QSqlDatabase.addDatabase('QSQLITE')
-    db_path = "./db/user_info.db"
+    db_path = "user_info.db"
     db.setDatabaseName(db_path)
     if not db.open():
         print("无法打开数据库")
@@ -965,8 +970,7 @@ def show_disclaimer():
 
 if __name__ == "__main__":
     # 调试：C:\Users\hongz\Downloads\简历助手\python-embed\python.exe C:\Users\hongz\Downloads\简历助手\src\main.py
-    # 通过 Get-ChildItem 命令获取当前目录下所有 .py 文件，再使用 ForEach-Object 对每个文件执行 pyarmor gen 命令
-    # Get-ChildItem -Filter *.py | ForEach-Object { pyarmor gen $_.FullName }
+    # pyarmor gen main.py
 
     try:
         from ctypes import windll  # Only exists on Windows.
@@ -977,7 +981,7 @@ if __name__ == "__main__":
         pass
 
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("../resources/images/月亮.png"))
+    app.setWindowIcon(QIcon("./resources/images/月亮.png"))
     if show_disclaimer():
         window = MyWidget()
         window.show()

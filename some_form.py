@@ -1,4 +1,4 @@
-from src.core.sqlite3_simple_orm import Model, Column
+from sqlite3_simple_orm import Model, Column
 
 
 # 筛选条件

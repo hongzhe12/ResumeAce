@@ -1,0 +1,50 @@
+name: PySide6 Build
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install PySide6 pyinstaller
+
+    - name: Build executable
+      shell: cmd  # 使用Windows原生shell
+      run: |
+        pyinstaller --onefile --windowed --noconfirm ^
+          --name MyApp ^
+          --specpath . ^
+          --distpath ./dist ^
+          --workpath ./build ^
+          app.py
+
+    - name: Verify build
+      shell: pwsh  # 使用PowerShell
+      run: |
+        Get-ChildItem -Path dist
+        if (-not (Test-Path "dist\MyApp.exe")) {
+          Write-Error "Build failed!"
+          exit 1
+        }
+
+    - name: Create Release
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/MyApp.exe
+        tag_name: v${{ github.run_number }}

@@ -834,7 +834,7 @@ class MyWidget(ElWindow):
     def open_log_file(self):
         """打开日志文件"""
         try:
-            with open("app.log", 'r', encoding='utf-8') as file:
+            with open("logs/app.log", 'r', encoding='utf-8') as file:
                 log_content = file.read()
             # self.ui.log_output.setPlainText(log_content) # 待修改
 

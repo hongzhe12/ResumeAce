@@ -57,4 +57,4 @@ class SimpleLogger:
         """记录严重错误信息"""
         self.logger.critical(f"{inspect.currentframe().f_lineno}: {message}")
 
-logger = SimpleLogger('APP', 'app.log', 'DEBUG')
+logger = SimpleLogger('APP', 'logs/app.log', 'DEBUG')

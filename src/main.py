@@ -29,6 +29,7 @@ from sparkai.llm.llm import ChunkPrintHandler
 
 from src.core.some_form import PhoneInfo, FilterDefinition
 from src.core.xing_huo_api import get_xinghuo_response
+from src.simpe_log import logger
 from src.ui.base_window import ElWindow
 from src.ui.chat_window import ChatBox
 from src.ui.drawer_menu import DrawerMenu
@@ -39,21 +40,6 @@ from src.ui.ui_form import Ui_Form
 
 
 
-# 配置日志输出到文件
-log_file = "task_log.txt"
-logger = logging.getLogger("airtest")
-logger.setLevel(logging.DEBUG)  # 设置日志级别为 DEBUG
-
-# 创建文件处理器，日志写入到文件
-file_handler = logging.FileHandler(log_file, mode='a', encoding='utf-8')
-file_handler.setLevel(logging.DEBUG)
-
-# 创建日志格式
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-
-# 添加处理器到日志器
-logger.addHandler(file_handler)
 
 # 任务队列
 task_queue = []
@@ -61,7 +47,7 @@ task_queue = []
 global poco
 poco = None
 
-ADB_PATH = "adb"  # 开发环境
+ADB_PATH = r"C:/Users/canway/PycharmProjects/ResumeAce/.venv/Lib/site-packages/airtest/core/android/static/adb/windows/adb.exe"  # 开发环境
 
 # ADB_PATH = r"..\python-embed\Lib\site-packages\airtest\core\android\static\adb\windows\adb.exe"
 
@@ -848,7 +834,7 @@ class MyWidget(ElWindow):
     def open_log_file(self):
         """打开日志文件"""
         try:
-            with open(log_file, 'r', encoding='utf-8') as file:
+            with open("app.log", 'r', encoding='utf-8') as file:
                 log_content = file.read()
             # self.ui.log_output.setPlainText(log_content) # 待修改
 

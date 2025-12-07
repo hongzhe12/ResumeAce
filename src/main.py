@@ -27,16 +27,16 @@ from poco.proxy import UIObjectProxy
 from sparkai.core.outputs import LLMResult
 from sparkai.llm.llm import ChunkPrintHandler
 
-from base_window import ElWindow
-from chat_window import ChatBox
-from drawer_menu import DrawerMenu
-from input_form_dialog import InputFormDialog
-from some_form import PhoneInfo, FilterDefinition
-from title_bar import ElTitleBar
-from xing_huo_api import  get_xinghuo_response
+from src.core.some_form import PhoneInfo, FilterDefinition
+from src.core.xing_huo_api import get_xinghuo_response
+from src.ui.base_window import ElWindow
+from src.ui.chat_window import ChatBox
+from src.ui.drawer_menu import DrawerMenu
+from src.ui.input_form_dialog import InputFormDialog
+from src.ui.title_bar import ElTitleBar
+from src.ui.ui_form import Ui_Form
 
 
-from ui_form import Ui_Form
 
 
 # 配置日志输出到文件

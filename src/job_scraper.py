@@ -24,7 +24,6 @@ def parse_job_page(poco):
         description = poco("com.hpbr.bosszhipin:id/tv_description").attr('text') if \
             poco("com.hpbr.bosszhipin:id/tv_description").exists() else "暂无描述"
 
-
         # 截图并保存
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         screenshot_filename = f"screenshot/screenshot_{timestamp}.png"
@@ -86,70 +85,53 @@ def swipe_to_next(poco):
     except Exception as e:
         print(f"滑动失败: {e}")
 
+
 def scrape_jobs(num_jobs=10):
     """爬取指定数量的岗位数据"""
     # 初始化
     poco = create_poco()
     start_app("com.hpbr.bosszhipin")
-    
+
     for i in range(num_jobs):
-        print(f"正在爬取第 {i+1} 个岗位...")
-        
+        print(f"正在爬取第 {i + 1} 个岗位...")
+
         # 解析当前页面
         job_data = parse_job_page(poco)
-        
+
         if job_data:
             # 保存数据
             save_to_csv(job_data)
             print(f"已爬取岗位: {job_data['job_name']}")
         else:
             print("未能获取岗位信息")
-        
+
         # 滑动到下一个岗位
         swipe_to_next(poco)
 
-if __name__ == "__main__":
-    import os
-    import shutil
 
+if __name__ == "__main__":
 
     def cleanup_screenshots_and_csv():
         """
         清理截图文件夹中的所有文件，并删除指定的CSV文件
         """
-        # 定义路径
-        csv_file = r"C:\Users\canway\PycharmProjects\ResumeAce\src\2025-12-07_jobs.csv"
+        # 搜索路径下全部的csv文件
+        csv_files = [f for f in os.listdir(r'C:\Users\canway\PycharmProjects\ResumeAce\src') if f.endswith(".csv")]
 
-        # 删除截图文件夹中的所有文件
-        # if os.path.exists(screenshot_dir):
-        #     try:
-        #         # 删除文件夹中的所有内容
-        #         for filename in os.listdir(screenshot_dir):
-        #             file_path = os.path.join(screenshot_dir, filename)
-        #             if os.path.isfile(file_path) or os.path.islink(file_path):
-        #                 os.unlink(file_path)
-        #             elif os.path.isdir(file_path):
-        #                 shutil.rmtree(file_path)
-        #         print(f"已清理 {screenshot_dir} 中的所有文件")
-        #     except Exception as e:
-        #         print(f"清理截图文件夹时出错: {e}")
-        # else:
-        #     print(f"截图文件夹不存在: {screenshot_dir}")
-
-        # 删除CSV文件
-        if os.path.exists(csv_file):
-            try:
-                os.remove(csv_file)
-                print(f"已删除文件: {csv_file}")
-            except Exception as e:
-                print(f"删除CSV文件时出错: {e}")
-        else:
-            print(f"CSV文件不存在: {csv_file}")
+        for i in csv_files:
+            # 删除CSV文件
+            if os.path.exists(i):
+                try:
+                    os.remove(i)
+                    print(f"已删除文件: {i}")
+                except Exception as e:
+                    print(f"删除CSV文件时出错: {e}")
+            else:
+                print(f"CSV文件不存在: {i}")
 
 
     cleanup_screenshots_and_csv()
 
     # 爬取100个岗位数据
     scrape_jobs(50)
-    # "C:/Users/canway/PycharmProjects/ResumeAce/.venv/Lib/site-packages/airtest/core/android/static/adb/windows/adb.exe" connect 192.168.0.104:41125
-    # "C:/Users/canway/PycharmProjects/ResumeAce/.venv/Lib/site-packages/airtest/core/android/static/adb/windows/adb.exe" shell dumpsys window windows
+    # 连接手机 "C:/Users/canway/PycharmProjects/ResumeAce/.venv/Lib/site-packages/airtest/core/android/static/adb/windows/adb.exe" connect 192.168.0.104:41125
